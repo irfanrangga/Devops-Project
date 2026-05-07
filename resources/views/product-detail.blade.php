@@ -23,7 +23,7 @@
             <h2 class="text-slate-400">/</h2>
             <a href="{{ route('product.index') }}" class="text-slate-400 hover:text-blue-500">Etalase Produk</a>
             <h2 class="text-slate-400">/</h2>
-            <h2 class="text-blue-700">{{ $product->nama }}</h2>
+            <h2 class="text-blue-700">{{ $product->name }}</h2>
         </div>
         {{-- Product Detail --}}
         <section>
@@ -31,19 +31,19 @@
                 {{-- Gambar Produk --}}
                 <div class="w-full lg:w-1/3">
                     <img class="w-full h-96 md:h-[32rem] rounded-xl object-cover border border-gray-200"
-                        src="{{ asset($product->file) }}" alt="{{ $product->nama }}">
+                        src="{{ asset($product->product_image) }}" alt="{{ $product->name }}">
                 </div>
                 {{-- Deskripsi Produk --}}
                 <div class="w-full lg:w-2/3">
                     <span class="border border-blue-500 bg-blue-100 text-sm text-blue-500 p-2 rounded-lg"><strong
-                            class="text-blue-500">{{ $product->kategori }}</strong></span>
-                    <h1 class="text-3xl font-bold mb-2 mt-4">{{ $product->nama }}</h1>
+                            class="text-blue-500">{{ $product->category }}</strong></span>
+                    <h1 class="text-3xl font-bold mb-2 mt-4">{{ $product->name }}</h1>
                     <div class="flex items-center gap-4 mb-4">
-                        <div class="flex gap-2">Stok <p class="font-semibold text-gray-400">{{ number_format($product->stok
+                        {{-- <div class="flex gap-2">Stok <p class="font-semibold text-gray-400">{{ number_format($product->stok
                                 ?? 0, 0, ',', '.') }}</p>
-                        </div>
+                        </div> --}}
                         <div class="flex gap-2">Terjual <p class="font-semibold text-gray-400">{{
-                                number_format($product->terjual ?? 0, 0, ',', '.') }}</p>
+                                number_format($product->sold ?? 0, 0, ',', '.') }}</p>
                         </div>
                         <div class="flex items-center text-yellow-400 text-sm">
                             @php
@@ -59,7 +59,7 @@
                     </div>
                     <form id="productForm" action="{{ route('cart.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="hidden" name="product_id" value="{{ $product->_id }}">
                         <div class="flex flex-col my-5">
                             <div class="mb-5">
                                 @php
@@ -76,8 +76,8 @@
                                 <div class="material-group" data-category="product">
                                     <div class="flex justify-between mb-2 items-center">
                                         <label for="material" class="text-lg font-semibold text-gray-900">Bahan</label>
-                                        <p id="unitPrice" data-price="{{ $product->harga }}"
-                                            class="text-lg font-semibold text-gray-400">Rp{{ number_format($product->harga,
+                                        <p id="unitPrice" data-price="{{ $product->price }}"
+                                            class="text-lg font-semibold text-gray-400">Rp{{ number_format($product->price,
                                             0,
                                             ',', '.')
                                             }}</p>
@@ -103,8 +103,8 @@
                                 <div class="flex flex-wrap gap-2 mt-2">
                                     @php
                                     $colors = [];
-                                    if(!empty($product->warna)) {
-                                    $colors = array_map('trim', explode(',', $product->warna));
+                                    if(!empty($product->color)) {
+                                    $colors = array_map('trim', explode(',', $product->color));
                                     }
                                     @endphp
                                     @if(count($colors) > 1)
@@ -129,7 +129,7 @@
                             <div class="mb-5">
                                 <div class="flex justify-between mb-2 items-center">
                                     <label for="design_type" class="text-lg font-semibold text-gray-900">Desain</label>
-                                    <p id="unitPrice" data-price="{{ $product->harga }}"
+                                    <p id="unitPrice" data-price="{{ $product->price }}"
                                         class="text-lg font-semibold text-gray-400">
                                         <span id="designPrice">
                                             @php
@@ -184,7 +184,7 @@
                                         </button>
     
                                         <input type="text" name="quantity" id="quantityInput" value="1" min="1"
-                                            data-max="{{ $product->stok ?? 9999 }}" onkeydown="return event.key !== 'Enter'"
+                                            data-max="{{ 9999 }}" onkeydown="return event.key !== 'Enter'"
                                             class="w-10 h-8 text-center text-sm border-none focus:ring-0 text-gray-900 bg-white">
     
                                         <button type="button" id="qtyPlus"
@@ -192,8 +192,8 @@
                                             +
                                         </button>
                                     </div>
-                                    <div class="text-md text-gray-500 ml-4">Stok: {{ number_format($product->stok ?? 0, 0,
-                                        ',', '.') }}</div>
+                                    {{-- <div class="text-md text-gray-500 ml-4">Stok: {{ number_format($product->stok ?? 0, 0,
+                                        ',', '.') }}</div> --}}
                                 </div>
                             </div>
     
@@ -208,7 +208,7 @@
                         <div class="flex justify-between">
                             <h3 class="text-2xl font-bold text-gray-900">Subtotal</h3>
                             <p id="totalPrice" class="text-2xl font-semibold text-blue-600">
-                                <span id="subtotalText">Rp {{ number_format($product->harga, 0, ',', '.') }}</span>
+                                <span id="subtotalText">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                             </p>
                         </div>
                         <div class="mt-6 lg:flex gap-4">

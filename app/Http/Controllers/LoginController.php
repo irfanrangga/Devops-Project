@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiClient;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -22,10 +23,10 @@ class LoginController extends Controller
     // PROSES LOGIN
     public function authenticate(Request $request)
     {
-        $response = Http::post(
-            env('API_BASE_URL') . '/login',
-            $request->only('email', 'password')
-        );
+        $response = ApiClient::post('/login', [
+            'email' => $request->email,
+            'password' => $request->password
+        ]);
 
         if ($response->failed()) {
             return back()
@@ -51,13 +52,12 @@ class LoginController extends Controller
             new Key(env('JWT_SECRET'), 'HS256')
         );
 
-        $user = User::updateOrCreate(
-            ['email' => $decoded->email],
-            [
-                'name' => $decoded->name ?? $decoded->email,
-                'role' => $decoded->role
-            ]
-        );
+        $user = new User([
+            'id' => $decoded->id,
+            'name' => $decoded->name ?? $decoded->email,
+            'email' => $decoded->email,
+            'role' => $decoded->role
+        ]);
 
         Auth::login($user);
 
