@@ -32,8 +32,8 @@ Route::middleware('guest')->group(function () {
 });
 
 // Google OAuth
-Route::get("auth/google", [GoogleController::class, 'redirectToGoogle'])->name('redirect.google');
-Route::get("auth/google/callback", [GoogleController::class, 'handleGoogleCallback']);
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 Route::get('/product', [ProductController::class, 'index'])->name('product.index');
 

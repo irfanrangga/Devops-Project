@@ -70,7 +70,7 @@
                     <span class="flex-grow h-px bg-gray-300"></span>
                 </div>
 
-                <a href="{{ route('redirect.google') }}" class="w-full border py-3 flex items-center justify-center rounded-lg hover:bg-gray-50">
+                <a href="{{ route('google.login') }}" class="w-full border py-3 flex items-center justify-center rounded-lg hover:bg-gray-50">
                     <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 mr-2" alt="Google">
                     <span class="text-sm font-medium">Masuk dengan Google</span>
                 </a>
