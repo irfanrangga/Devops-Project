@@ -39,18 +39,18 @@
             scroll-behavior: smooth;
         }
 
-        @keyframes scroll {
+        @keyframes infinite-scroll {
             0% {
                 transform: translateX(0);
             }
 
             100% {
-                transform: translateX(-50%);
+                transform: translateX(-100%);
             }
         }
 
         .animate-scroll {
-            animation: scroll 8s linear infinite;
+            animation: infinite-scroll 25s linear infinite;
         }
     </style>
 </head>
@@ -91,31 +91,21 @@
                 Mitra yang Sudah Bekerja Sama dengan Kami
             </h2>
 
-            <div class="relative w-full overflow-hidden">
-                <div class="flex gap-12 animate-scroll whitespace-nowrap">
-
-                    <img src="{{ asset('assets/paramount.png') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/mane.png') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/samsung.jpeg') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/season.png') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/continental.png') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/hsbc.jpeg') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/coca.jpeg') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/bca.jpeg') }}" class="h-20 inline-block">
-
-                    <img src="{{ asset('assets/paramount.png') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/mane.png') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/samsung.jpeg') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/season.png') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/continental.png') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/hsbc.jpeg') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/coca.jpeg') }}" class="h-20 inline-block">
-                    <img src="{{ asset('assets/bca.jpeg') }}" class="h-20 inline-block">
-
-                </div>
+            <div class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-200px),transparent_100%)]">
+                <ul class="flex items-center justify-center md:justify-start [&_li]:mx-12 [&_img]:max-w-none animate-scroll">
+                    <li><img src="{{ asset('assets/paramount.png') }}" ></li>
+                    <li><img src="{{ asset('assets/mane.png') }}"></li>
+                    <li><img src="{{ asset('assets/season.png') }}"></li>
+                    <li><img src="{{ asset('assets/continental.png') }}"></li>
+                </ul>
+                <ul class="flex items-center justify-center md:justify-start [&_li]:mx-12 [&_img]:max-w-none animate-scroll" aria-hidden="true">
+                    <li><img src="{{ asset('assets/paramount.png') }}" ></li>
+                    <li><img src="{{ asset('assets/mane.png') }}"></li>
+                    <li><img src="{{ asset('assets/season.png') }}"></li>
+                    <li><img src="{{ asset('assets/continental.png') }}"></li>
+                </ul>
             </div>
         </section>
-
 
         <section class="w-full px-6 md:px-12 lg:px-16 py-16">
             <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">Apapun Kebutuhan Cetak Anda</h2>

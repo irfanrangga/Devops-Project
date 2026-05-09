@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiClient;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -21,10 +22,16 @@ class LoginController extends Controller
     // PROSES LOGIN
     public function authenticate(Request $request)
     {
+<<<<<<< HEAD
         // 1. Validasi input dari user
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+=======
+        $response = ApiClient::post('/login', [
+            'email' => $request->email,
+            'password' => $request->password
+>>>>>>> 5ecbfe40e72a06df6b8c5d4bc73b2fd0cf3e9361
         ]);
 
         // 2. Coba proses login langsung ke tabel 'users' di MySQL
@@ -43,6 +50,44 @@ class LoginController extends Controller
             ->withErrors([
                 'email' => 'Email atau password salah.',
             ]);
+<<<<<<< HEAD
+=======
+        }
+
+        $token = $response->json('token')
+                ?? $response->json('data.token');
+
+        if(!$token) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                'email' => 'Token tidak diterima dari API'
+                ]);
+        }
+
+        $decoded = JWT::decode(
+            $token, 
+            new Key(env('JWT_SECRET'), 'HS256')
+        );
+
+        $user = new User([
+            'id' => $decoded->id,
+            'name' => $decoded->name ?? $decoded->email,
+            'email' => $decoded->email,
+            'role' => $decoded->role
+        ]);
+
+        Auth::login($user);
+
+        // Simpan ke session
+        Session::put('jwt_token', $token);
+        Session::put('user_role', $decoded->role);
+        Session::put('user_id', $decoded->id);
+        Session::put('user_name', $decoded->name ?? $decoded->email);
+        Session::put('user_email', $decoded->email);
+
+        return redirect()->route('home');
+>>>>>>> 5ecbfe40e72a06df6b8c5d4bc73b2fd0cf3e9361
     }
 
     // LOGOUT
