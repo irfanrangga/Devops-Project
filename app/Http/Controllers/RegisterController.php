@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiClient;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -26,7 +27,7 @@ class RegisterController extends Controller
         ]);
 
         // 2. KIRIM KE API
-        $response = Http::post(env('API_BASE_URL') . '/register', [
+        $response = ApiClient::post('/register', [
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => $validatedData['password'],
