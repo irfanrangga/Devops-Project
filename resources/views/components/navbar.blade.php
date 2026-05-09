@@ -109,6 +109,14 @@
                     <i class="fa-solid fa-gear"></i> Pengaturan Akun
                 </a>
 
+                @if (Auth::user()->role === 'admin')
+                    @csrf
+                    <a href="{{ route('dashboard') }}"
+                        class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition">
+                        <i class="fa-solid fa-gauge"></i>Dashboard
+                    </a>
+                @endif
+
                 <form action="{{ route('logout') }}" method="POST" class="mt-3">
                     @csrf
                     <button type="submit"
