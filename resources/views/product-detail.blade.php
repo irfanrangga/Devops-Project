@@ -17,31 +17,28 @@
 <body>
     <x-navbar></x-navbar>
 
-    <main class="w-full px-6 md:px-12 lg:px-16 mx-auto mt-28">
+    <main class="container w-full px-6 md:px-12 lg:px-16 mx-auto mt-28">
         <div class="hidden gap-3 lg:flex">
-            <a href="{{ route('home') }}" class="text-slate-400 hover:text-blue-500">Home</a>
+            <a href="{{ route('home') }}" class="text-slate-400 hover:text-blue-500 text-sm">Home</a>
             <h2 class="text-slate-400">/</h2>
-            <a href="{{ route('product.index') }}" class="text-slate-400 hover:text-blue-500">Etalase Produk</a>
+            <a href="{{ route('product.index') }}" class="text-slate-400 hover:text-blue-500 text-sm">Etalase Produk</a>
             <h2 class="text-slate-400">/</h2>
-            <h2 class="text-blue-700">{{ $product->name }}</h2>
+            <h2 class="text-blue-700 text-sm font-medium">{{ $product->nama }}</h2>
         </div>
         {{-- Product Detail --}}
         <section>
-            <div class="flex flex-col lg:flex-row gap-10 mt-5">
+            <div class="container flex flex-col lg:flex-row gap-10 mt-4">
                 {{-- Gambar Produk --}}
-                <div class="w-full lg:w-1/3">
+                <div class="w-full lg:w-1/2">
                     <img class="w-full h-96 md:h-[32rem] rounded-xl object-cover border border-gray-200"
-                        src="{{ asset($product->product_image) }}" alt="{{ $product->name }}">
+                        src="{{ asset($product->file) }}" alt="{{ $product->nama }}">
                 </div>
                 {{-- Deskripsi Produk --}}
-                <div class="w-full lg:w-2/3">
+                <div class="w-full lg:w-1/2">
                     <span class="border border-blue-500 bg-blue-100 text-sm text-blue-500 p-2 rounded-lg"><strong
-                            class="text-blue-500">{{ $product->category }}</strong></span>
-                    <h1 class="text-3xl font-bold mb-2 mt-4">{{ $product->name }}</h1>
+                            class="text-blue-500">{{ $product->kategori }}</strong></span>
+                    <h1 class="text-2xl font-bold mb-2 mt-4">{{ $product->nama }}</h1>
                     <div class="flex items-center gap-4 mb-4">
-                        {{-- <div class="flex gap-2">Stok <p class="font-semibold text-gray-400">{{ number_format($product->stok
-                                ?? 0, 0, ',', '.') }}</p>
-                        </div> --}}
                         <div class="flex gap-2">Terjual <p class="font-semibold text-gray-400">{{
                                 number_format($product->sold ?? 0, 0, ',', '.') }}</p>
                         </div>
@@ -59,8 +56,8 @@
                     </div>
                     <form id="productForm" action="{{ route('cart.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->_id }}">
-                        <div class="flex flex-col my-5">
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <div class="flex flex-col my-2">
                             <div class="mb-5">
                                 @php
                                 // Ambil bahan dari field produk (bisa comma-separated, array, atau satu string)
@@ -74,10 +71,10 @@
                                 }
                                 @endphp
                                 <div class="material-group" data-category="product">
-                                    <div class="flex justify-between mb-2 items-center">
-                                        <label for="material" class="text-lg font-semibold text-gray-900">Bahan</label>
-                                        <p id="unitPrice" data-price="{{ $product->price }}"
-                                            class="text-lg font-semibold text-gray-400">Rp{{ number_format($product->price,
+                                    <div class="flex justify-between mb-1 items-center">
+                                        <label for="material" class="font-semibold text-gray-900 text-lg">Bahan</label>
+                                        <p id="unitPrice" data-price="{{ $product->harga }}"
+                                            class="text-lg font-semibold text-gray-400">Rp{{ number_format($product->harga,
                                             0,
                                             ',', '.')
                                             }}</p>
@@ -103,8 +100,8 @@
                                 <div class="flex flex-wrap gap-2 mt-2">
                                     @php
                                     $colors = [];
-                                    if(!empty($product->color)) {
-                                    $colors = array_map('trim', explode(',', $product->color));
+                                    if(!empty($product->warna)) {
+                                    $colors = array_map('trim', explode(',', $product->warna));
                                     }
                                     @endphp
                                     @if(count($colors) > 1)
@@ -129,7 +126,7 @@
                             <div class="mb-5">
                                 <div class="flex justify-between mb-2 items-center">
                                     <label for="design_type" class="text-lg font-semibold text-gray-900">Desain</label>
-                                    <p id="unitPrice" data-price="{{ $product->price }}"
+                                    <p id="unitPrice" data-price="{{ $product->harga }}"
                                         class="text-lg font-semibold text-gray-400">
                                         <span id="designPrice">
                                             @php
@@ -208,7 +205,7 @@
                         <div class="flex justify-between">
                             <h3 class="text-2xl font-bold text-gray-900">Subtotal</h3>
                             <p id="totalPrice" class="text-2xl font-semibold text-blue-600">
-                                <span id="subtotalText">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                <span id="subtotalText">Rp {{ number_format($product->harga, 0, ',', '.') }}</span>
                             </p>
                         </div>
                         <div class="mt-6 lg:flex gap-4">

@@ -34,12 +34,12 @@
                     <i class="fa-solid fa-cart-shopping"></i>
                 </a>
 
-                @if(session()->has('jwt_token'))
+                @if(Auth::check())
                     <div class="group relative">
                         <a href="{{ route('profile') }}"
                             class="flex items-center gap-2 text-gray-700 hover:text-brand-blue transition">
                             <i class="fa-regular fa-user text-xl group-hover:text-brand-blue"></i>
-                            <span class="font-medium text-[15px]">{{ session('user_name') }}</span>
+                            <span class="font-medium text-[15px]">{{ Auth::user()->name }}</span>
                             <i class="fa-solid fa-caret-down text-xs ml-1"></i>
                         </a>
 
@@ -50,7 +50,8 @@
                                 class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition">
                                 <i class="fa-solid fa-gear"></i> Profile
                             </a>
-                            @if (session('user_name') === 'Admin')
+                            @if (Auth::user()->is_admin)
+                                @csrf
                                 <a href="{{ route('dashboard') }}"
                                     class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition">
                                     <i class="fa-solid fa-gauge"></i>Dashboard
@@ -98,15 +99,23 @@
 
         <hr class="border-gray-100">
 
-        @if (session()->has('jwt_token'))
+        @if (Auth::check())
             <div class="py-2 flex flex-col">
                 <span class="text-gray-600 text-sm">Selamat datang,</span>
-                <span class="font-semibold text-lg text-gray-900 mb-2">{{ session('user_name') }}</span>
+                <span class="font-semibold text-lg text-gray-900 mb-2">{{ Auth::user()->name }}</span>
 
                 <a href="{{ route('profile') }}"
                     class="text-sm font-medium text-brand-blue hover:text-brand-dark flex items-center gap-2">
                     <i class="fa-solid fa-gear"></i> Pengaturan Akun
                 </a>
+
+                @if (Auth::user()->role === 'admin')
+                    @csrf
+                    <a href="{{ route('dashboard') }}"
+                        class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition">
+                        <i class="fa-solid fa-gauge"></i>Dashboard
+                    </a>
+                @endif
 
                 <form action="{{ route('logout') }}" method="POST" class="mt-3">
                     @csrf

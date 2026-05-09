@@ -15,7 +15,7 @@ class User extends Authenticatable implements FilamentUser
 {
     public function canAccessPanel(Panel $panel): bool
     {
-        return str_ends_with($this->email, 'admin@gmail.com');
+        return $this->role === 'admin';
     }
 
     public function messages()
@@ -35,6 +35,10 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'full_name',
+        'phone',
+        'location',
+        'postal_code',
         'google_id',
     ];
 

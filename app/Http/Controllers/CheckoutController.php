@@ -28,7 +28,7 @@ class CheckoutController extends Controller
      */
     public function process(Request $request)
     {
-        $userId = session('user_id');
+        $userId = Auth::id();
         if(!$userId){
             return redirect()
                 ->route('login')
@@ -71,7 +71,7 @@ class CheckoutController extends Controller
             ]);
         } else {
             $cartItems = Cart::with('product')
-                ->where('user_id', session('user_id'))
+                ->where('user_id', Auth::id())
                 ->where('is_selected', true)
                 ->get();
 
@@ -86,11 +86,9 @@ class CheckoutController extends Controller
         foreach ($cartItems as $item) {
             $basePrice = $item->product->harga;
             
-            // Cek apakah item ini Custom?
             $isCustom = (isset($item->design_type) && $item->design_type === 'custom') || 
                         (!empty($item->custom_file) && strtolower($item->custom_file) !== 'standard');
 
-            // Jika Custom, tambah Rp 5.000
             $finalUnitPrice = $isCustom ? ($basePrice + 5000) : $basePrice;
             
             // SIMPAN harga final ini ke object item untuk dipakai saat create OrderItem
@@ -124,7 +122,7 @@ class CheckoutController extends Controller
         // Hitung Grand Total
         $tax = $subtotal * 0.11;
         $grandTotal = $subtotal + $tax + $shippingCost;
-        $userId = session('user_id');
+        $userId = Auth::id();
 
         DB::beginTransaction();
 
@@ -191,7 +189,7 @@ class CheckoutController extends Controller
             $create_invoice_request = new \Xendit\Invoice\CreateInvoiceRequest([
                 'external_id' => $orderNumber,
                 'amount' => $grandTotal,
-                'payer_email' => session('user_email'),
+                'payer_email' => Auth::user()->email,
                 'description' => 'Pembayaran Order ' . $orderNumber,
                 'invoice_duration' => 43200, // 12 Jam
                 'success_redirect_url' => route('home'),
@@ -207,7 +205,7 @@ class CheckoutController extends Controller
 
             // D. Hapus Cart
             if (! $request->filled('product_id')) {
-                Cart::where('user_id', session('user_id'))
+                Cart::where('user_id', Auth::id())
                     ->where('is_selected', true)
                     ->delete();
             }
@@ -228,7 +226,7 @@ class CheckoutController extends Controller
      */
     public function show($id)
     {
-        $order = Order::with('items')->where('user_id', session('user_id'))->findOrFail($id);
+        $order = Order::with('items')->where('user_id', Auth::id())->findOrFail($id);
 
         // Auto-Expire saat halaman dibuka
         if ($order->payment_status == '1') {

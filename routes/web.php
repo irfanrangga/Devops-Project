@@ -37,7 +37,7 @@ Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallba
 
 Route::get('/product', [ProductController::class, 'index'])->name('product.index');
 
-Route::middleware(['api.auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // LOGOUT
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
