@@ -80,7 +80,7 @@
                 @forelse($products as $product)
                     <div class="group relative bg-white border rounded-xl overflow-hidden">
 
-                        <a href="{{ url('/product/' . $product->id) }}" class="absolute inset-0 z-10"></a>
+                        <a href="{{ route('product.show', $product->id) }}" class="absolute inset-0 z-10"></a>
 
                         <button type="button" onclick="toggleWishlist(this, {{ $product->id }}, event)"
                             class="absolute top-3 right-3 z-30 w-9 h-9 rounded-full bg-white/90 shadow-sm transition-transform active:scale-95 flex items-center justify-center cursor-pointer hover:bg-gray-50 group-hover/btn:ring-2 group-hover/btn:ring-pink-500">
@@ -94,7 +94,7 @@
 
                         <div class="p-5 flex flex-col flex-grow relative z-10">
                             <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">
-                                {{ $product->kategori }}
+                                {{ $product->category }}
                             </span>
 
                             <h3

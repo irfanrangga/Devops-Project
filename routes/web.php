@@ -9,6 +9,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\Auth\GoogleController;
 
 // HOME
 Route::get('/', function () {
@@ -30,9 +31,13 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'authenticate'])->name('login.process');
 });
 
+// Google OAuth
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
 Route::get('/product', [ProductController::class, 'index'])->name('product.index');
 
-Route::middleware(['api.auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // LOGOUT
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 

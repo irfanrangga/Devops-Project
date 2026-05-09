@@ -7,15 +7,9 @@ use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
-    // fungsi untuk Toggle Add/Remove via AJAX
     public function toggle(Request $request)
     {
-        $userId = session('user_id');
-
-        // Pastikan user login
-        if (!$userId) {
-            return response()->json(['status' => 'error', 'message' => 'Silakan login terlebih dahulu.'], 401);
-        }
+        $userId = Auth::id();
 
         $productId = $request->product_id;
 

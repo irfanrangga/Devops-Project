@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ApiClient;
 use App\Models\Order;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
@@ -16,7 +15,7 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $userId = session('user_id');
+        $userId = Auth::id();
         // ambil data wishlist milik user yang sedang login beserta data produknya
         $wishlists = Wishlist::with('product')
             ->where('user_id', $userId)
@@ -45,32 +44,9 @@ class ProfileController extends Controller
             'postal_code' => ['nullable', 'string', 'max:10'],
         ]);
 
-        // 2. Pastikan user login (session)
-        if (!session()->has('jwt_token')) {
-            return redirect()->route('login');
-        }
-        $userId = session('user_id');
-        // 3. Kirim ke API
-        $response = ApiClient::put('/users/' . $userId, $validated);
+        $user = Auth::user();
+        $user->update($validated);
 
-        if ($response->failed()) {
-            return back()->withErrors([
-                'error' => 'Gagal memperbarui profil'
-            ]);
-        }
-
-        // 4. Update session (sinkron)
-        $user = $response->json('data');
-
-        // Simpan perubahan biar bisa dipanggil di view
-        Session::put('user_name', $user['name']);
-        Session::put('user_email', $user['email'] ?? session('user_email'));
-        Session::put('user_full_name', $user['full_name'] ?? null);
-        Session::put('user_phone', $user['phone'] ?? null);
-        Session::put('user_location', $user['location'] ?? null);
-        Session::put('user_postal_code', $user['postal_code'] ?? null);
-
-        // 5. Redirect kembali ke sub-halaman user-info dengan pesan sukses
         return redirect()->route('profile', ['page' => 'user-info'])->with('success', 'Informasi profil berhasil diperbarui!');
     }
 
@@ -93,21 +69,11 @@ class ProfileController extends Controller
         ]);
 
         // 2. Ambil User yang sedang login
-        $token = session('jwt_token');
-        if (!$token) {
-        return redirect()->route('login')
-            ->withErrors(['auth' => 'Sesi Anda telah berakhir. Silakan login kembali.']);
-        }
+        $user = Auth::user();
 
-        $response = ApiClient::put('/users/password/me', $validated);
-
-        // 3. Hash dan simpan password baru
-        if ($response->failed()) {
-            return back()->withErrors([
-                'current_password' =>
-                    $response->json('message') ?? 'Gagal memperbarui kata sandi.'
-            ]);
-        }
+        $user->update([
+            'password' => Hash::make($validated['new_password'])
+        ]);
 
         // 4. Redirect kembali ke sub-halaman pengaturan dengan pesan sukses
         return redirect()->route('profile', ['page' => 'pengaturan'])->with('success', 'Kata sandi berhasil diperbarui!');
