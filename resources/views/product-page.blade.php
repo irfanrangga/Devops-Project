@@ -80,15 +80,15 @@
                 @forelse($products as $product)
                     <div class="group relative bg-white border rounded-xl overflow-hidden">
 
-                        <a href="{{ route('product.show', $product->_id) }}" class="absolute inset-0 z-10"></a>
+                        <a href="{{ route('product.show', $product->id) }}" class="absolute inset-0 z-10"></a>
 
-                        <button type="button" onclick="toggleWishlist(this, {{ $product->_id }}, event)"
+                        <button type="button" onclick="toggleWishlist(this, {{ $product->id }}, event)"
                             class="absolute top-3 right-3 z-30 w-9 h-9 rounded-full bg-white/90 shadow-sm transition-transform active:scale-95 flex items-center justify-center cursor-pointer hover:bg-gray-50 group-hover/btn:ring-2 group-hover/btn:ring-pink-500">
                             <i class="fa-regular fa-heart text-gray-400 text-lg transition-colors duration-200"></i>
                         </button>
 
                         <div class="h-[220px] overflow-hidden bg-gray-50 border-b border-gray-100 relative z-0">
-                            <img src="{{ asset($product->product_image) }}" alt="{{ $product->name }}"
+                            <img src="{{ asset($product->file) }}" alt="{{ $product->nama }}"
                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ease-out">
                         </div>
 
@@ -99,7 +99,7 @@
 
                             <h3
                                 class="text-base font-bold text-gray-900 leading-snug mb-2 group-hover:text-brand-blue transition line-clamp-2">
-                                {{ $product->name }}
+                                {{ $product->nama }}
                             </h3>
 
                             <div class="flex items-center gap-1 mb-4">
@@ -120,12 +120,12 @@
                                 class="mt-auto pt-3 border-t border-dashed border-gray-200 flex justify-between items-center">
 
                                 <span class="text-lg font-bold text-gray-900">
-                                    Rp {{ number_format($product->price, 0, ',', '.') }}
+                                    Rp {{ number_format($product->harga, 0, ',', '.') }}
                                 </span>
 
                                 <form action="{{ route('cart.store') }}" method="POST" onsubmit="event.stopPropagation()">
                                     @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->_id }}">
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
                                     <input type="hidden" name="quantity" value="1">
                                 </form>
 

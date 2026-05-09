@@ -51,6 +51,7 @@
                                 <i class="fa-solid fa-gear"></i> Profile
                             </a>
                             @if (Auth::user()->is_admin)
+                                @csrf
                                 <a href="{{ route('dashboard') }}"
                                     class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition">
                                     <i class="fa-solid fa-gauge"></i>Dashboard
