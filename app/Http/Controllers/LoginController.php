@@ -28,17 +28,17 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        // 2. Coba proses login langsung ke tabel 'users' di MySQL
-        // Auth::attempt akan otomatis mencocokkan email dan hash password
         if (Auth::attempt($credentials)) {
             // Regenerasi session untuk mencegah serangan Session Fixation
             $request->session()->regenerate();
 
-            // Arahkan ke halaman utama/dashboard
+            if (Auth::user()->role === 'admin') {
+                return redirect()->intended('/admin');
+            }
+
             return redirect()->route('home');
         }
 
-        // 3. Jika login gagal (email/password salah)
         return back()
             ->withInput($request->only('email'))
             ->withErrors([
@@ -49,10 +49,8 @@ class LoginController extends Controller
     // LOGOUT
     public function logout(Request $request)
     {
-        // Keluarkan user dari session Laravel
         Auth::logout();
 
-        // Bersihkan dan amankan kembali session
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
