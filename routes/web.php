@@ -32,7 +32,7 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/product', [ProductController::class, 'index'])->name('product.index');
 
-Route::middleware(['api.auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // LOGOUT
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -54,9 +54,9 @@ Route::middleware(['api.auth'])->group(function () {
     Route::get('/payment/{id}', [CheckoutController::class, 'show'])->name('payment.show');
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
-    Route::get('/dashboard', function () {
-        return redirect(config('filament.path', 'admin'));
-    })->name('dashboard');
+    // Route::get('/dashboard', function () {
+    //     return redirect(config('filament.path', 'admin'));
+    // })->name('dashboard');
 });
 
 Route::post('/webhook/xendit', [WebhookController::class, 'handle'])->name('webhook.xendit');

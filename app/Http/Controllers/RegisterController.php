@@ -21,23 +21,13 @@ class RegisterController extends Controller
         // 1. VALIDASI DATA
         $validatedData = $request->validate([
             'name' => 'required|min:3|max:255',
-            'email' => 'required|email:dns',
+            'email' => 'required|email:dns|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
 
-        // 2. KIRIM KE API
-        $response = Http::post(env('API_BASE_URL') . '/register', [
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => $validatedData['password'],
-        ]);
+        $validatedData['password'] = Hash::make($validatedData['password']);
 
-        // 3. JIKA GAGAL
-        if ($response->failed()) {
-            return back()->withErrors([
-                'register' => $response->json('message') ?? 'Registrasi gagal'
-            ]);
-        }
+        User::create($validatedData);
 
         // 4. REDIRECT KE LOGIN
         return redirect()
