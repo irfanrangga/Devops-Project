@@ -307,3 +307,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+
+function changeMainImage(thumbnail) {
+        const mainImage = document.getElementById("main-product-image");
+        mainImage.src = thumbnail.src;
+
+        const thumbnails = document.querySelectorAll(".img-thumbnail");
+        thumbnails.forEach(thumb => {
+            thumb.classList.remove("border-blue-500", "border-2");
+            thumb.classList.add("opacity-75");
+        });
+
+        thumbnail.classList.remove("opacity-75");
+        thumbnail.classList.add("border-blue-500", "border-2");
+    }

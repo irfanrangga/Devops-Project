@@ -104,56 +104,113 @@
                             <i class="fa-solid fa-bag-shopping text-brand-blue"></i> Rincian Produk
                         </h2>
                         
-                        <div class="space-y-6">
+                        <div class="space-y-4">
                             @foreach($order->items as $item)
-                            <div class="flex gap-4 sm:gap-6 border-b border-gray-50 last:border-0 pb-6 last:pb-0">
-                                <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100 border border-gray-200">
-                                    @if($item->product)
-                                        <img src="{{ asset($item->product->file) }}" alt="{{ $item->product_name }}" class="w-full h-full object-cover">
-                                    @else
-                                        <div class="flex items-center justify-center h-full text-gray-400">
-                                            <i class="fa-solid fa-image text-xl"></i>
-                                        </div>
-                                    @endif
-                                </div>
+                            <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
+                                <!-- Product Header -->
+                                <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 p-5 bg-gradient-to-br from-gray-50 to-white">
+                                    <!-- Product Image -->
+                                    <div class="w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100 border border-gray-200 shadow-sm">
+                                        @if($item->product)
+                                            <img src="{{ asset($item->product->file) }}" alt="{{ $item->product_name }}" class="w-full h-full object-cover">
+                                        @else
+                                            <div class="flex items-center justify-center h-full text-gray-400 text-2xl">
+                                                <i class="fa-solid fa-image"></i>
+                                            </div>
+                                        @endif
+                                    </div>
 
-                                <div class="flex-1">
-                                    <div class="flex justify-between items-start">
+                                    <!-- Product Info -->
+                                    <div class="flex-1 flex flex-col justify-between">
                                         <div>
-                                            <h3 class="font-semibold text-gray-900 text-lg">{{ $item->product_name }}</h3>
-                                            <p class="text-sm text-gray-500 mt-1">
-                                                {{ $item->quantity }} x Rp {{ number_format($item->product_price, 0, ',', '.') }}
-                                            </p>
+                                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-3">
+                                                <div>
+                                                    <h3 class="font-bold text-gray-900 text-base sm:text-lg leading-snug">{{ $item->product_name }}</h3>
+                                                    <p class="text-sm text-gray-500 mt-1.5">
+                                                        <span class="font-semibold text-gray-700">{{ $item->quantity }}x</span> @ Rp {{ number_format($item->product_price, 0, ',', '.') }}
+                                                    </p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Subtotal</p>
+                                                    <p class="font-bold text-brand-blue text-lg">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <p class="font-bold text-brand-blue">
-                                            Rp {{ number_format($item->subtotal, 0, ',', '.') }}
-                                        </p>
-                                    </div>
 
-                                    <div class="mt-3 flex flex-wrap gap-2">
-                                        @if($item->bahan)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
-                                                Bahan: {{ $item->bahan }}
-                                            </span>
-                                        @endif
-                                        @if($item->warna)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
-                                                Warna: {{ $item->warna }}
-                                            </span>
-                                        @endif
-                                        @if(!empty($item->custom_file) && $item->custom_file !== 'null' && strtolower($item->custom_file) !== 'standard') 
-                                            <a href="{{ asset('storage/' . $item->custom_file) }}" target="_blank" class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition">
-                                                <i class="fa-solid fa-paperclip mr-1"></i> File Custom
-                                            </a>
-                                        @endif
-                                    </div>
-
-                                    @if($item->note)
-                                        <div class="mt-2 text-xs text-gray-500 bg-gray-50 p-2 rounded border border-dashed border-gray-200">
-                                            <i class="fa-regular fa-comment-dots mr-1"></i> Note: {{ $item->note }}
+                                        <!-- Specifications Tags -->
+                                        @if($item->bahan || $item->warna)
+                                        <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-200">
+                                            @if($item->bahan)
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                                                    <i class="fa-solid fa-shirt text-amber-600"></i>
+                                                    <span>{{ $item->bahan }}</span>
+                                                </span>
+                                            @endif
+                                            @if($item->warna)
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
+                                                    <i class="fa-solid fa-palette text-purple-600"></i>
+                                                    <span>{{ $item->warna }}</span>
+                                                </span>
+                                            @endif
                                         </div>
-                                    @endif
+                                        @endif
+                                    </div>
                                 </div>
+
+                                <!-- Custom Design File Section -->
+                                @if(!empty($item->custom_file) && $item->custom_file !== 'null' && strtolower($item->custom_file) !== 'standard') 
+                                <div class="border-t border-gray-200 bg-blue-50 px-5 py-3">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <div class="flex items-center gap-2.5 min-w-0">
+                                            @php
+                                                $fileExtension = strtolower(pathinfo($item->custom_file, PATHINFO_EXTENSION));
+                                                $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                                $isPdf = $fileExtension === 'pdf';
+                                            @endphp
+                                            
+                                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border border-blue-200 flex-shrink-0">
+                                                @if($isImage)
+                                                    <i class="fa-solid fa-image text-lg text-blue-500"></i>
+                                                @elseif($isPdf)
+                                                    <i class="fa-solid fa-file-pdf text-lg text-red-500"></i>
+                                                @else
+                                                    <i class="fa-solid fa-file text-lg text-blue-500"></i>
+                                                @endif
+                                            </div>
+                                            
+                                            <div class="min-w-0">
+                                                <p class="text-xs font-bold text-blue-700 uppercase tracking-wide">📎 Desain Custom</p>
+                                                <p class="text-xs font-medium text-gray-800 truncate">{{ basename($item->custom_file) }}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex gap-1.5 flex-shrink-0">
+                                            @if($isImage)
+                                                <button onclick="viewDesignModal('{{ route('design.view', ['orderId' => $order->id, 'itemId' => $item->id]) }}')" 
+                                                        class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Lihat desain">
+                                                    <i class="fa-solid fa-eye text-sm"></i>
+                                                </button>
+                                            @endif
+                                            <a href="{{ route('design.download', ['orderId' => $order->id, 'itemId' => $item->id]) }}" 
+                                               download
+                                               class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" 
+                                               title="Download file">
+                                                <i class="fa-solid fa-download text-sm"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+
+                                <!-- Notes Section -->
+                                @if($item->note)
+                                <div class="border-t border-gray-200 bg-gray-50 p-4 sm:p-5">
+                                    <div class="text-sm text-gray-700">
+                                        <p class="font-semibold text-gray-800 mb-2"><i class="fa-regular fa-comment-dots mr-1.5 text-gray-600"></i>Catatan Pesanan</p>
+                                        <p class="text-gray-600 leading-relaxed ml-5">{{ $item->note }}</p>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                             @endforeach
                         </div>
@@ -276,6 +333,46 @@
 
                 timerElement.innerHTML = `${fHours} : ${fMinutes} : ${fSeconds}`;
             }, 1000);
+        }
+
+        // Fungsi untuk menampilkan desain di modal
+        function viewDesignModal(imageUrl) {
+            const modal = document.getElementById('designModal');
+            const modalImage = document.getElementById('modalDesignImage');
+            
+            if (!modal) {
+                // Buat modal jika belum ada
+                const newModal = document.createElement('div');
+                newModal.id = 'designModal';
+                newModal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden';
+                newModal.innerHTML = `
+                    <div class="bg-white rounded-lg max-w-2xl w-full mx-4 overflow-hidden shadow-2xl">
+                        <div class="bg-gray-900 p-4 flex justify-between items-center">
+                            <h3 class="text-white font-bold">Preview Desain</h3>
+                            <button onclick="closeDesignModal()" class="text-white hover:text-gray-300 text-2xl">×</button>
+                        </div>
+                        <div class="p-6 text-center bg-gray-50 max-h-96 overflow-auto flex items-center justify-center">
+                            <img id="modalDesignImage" src="" alt="Desain" class="max-w-full max-h-96 object-contain">
+                        </div>
+                        <div class="bg-gray-100 p-4 text-right border-t">
+                            <button onclick="closeDesignModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg transition">Tutup</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(newModal);
+            }
+            
+            const modal2 = document.getElementById('designModal');
+            const modalImage2 = document.getElementById('modalDesignImage');
+            modalImage2.src = imageUrl;
+            modal2.classList.remove('hidden');
+        }
+
+        function closeDesignModal() {
+            const modal = document.getElementById('designModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {

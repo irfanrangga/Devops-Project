@@ -30,8 +30,20 @@
             <div class="container flex flex-col lg:flex-row gap-10 mt-4">
                 {{-- Gambar Produk --}}
                 <div class="w-full lg:w-1/2">
-                    <img class="w-full h-96 md:h-[32rem] rounded-xl object-cover border border-gray-200"
+                    <div class="main-image-container mb-3">
+                        <img id="main-product-image" class="w-full h-96 md:h-[32rem] rounded-xl object-cover border border-gray-200"
                         src="{{ asset($product->file) }}" alt="{{ $product->nama }}">
+                    </div>
+                    <div class="thumbnails-container flex gap-4 mt-4 w-full overflow-x-auto">
+                        <img src="{{ asset($product->file) }}" alt="" class="img-thumbnail w-32 h-32 object-cover border-2 border-blue-500 cursor-pointer rounded-md hover:opacity-100 transition" onclick="changeMainImage(this)">
+                        <img src="{{ asset("assets/etalase_produk/majalah.jpeg") }}" alt="" class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition" onclick="changeMainImage(this)">
+                        <img src="{{ asset($product->file) }}" alt="" class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition" onclick="changeMainImage(this)">
+                        <img src="{{ asset($product->file) }}" alt="" class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition" onclick="changeMainImage(this)">
+                        <img src="{{ asset($product->file) }}" alt="" class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition" onclick="changeMainImage(this)">
+                    </div>
+                    <div>
+                        
+                    </div>
                 </div>
                 {{-- Deskripsi Produk --}}
                 <div class="w-full lg:w-1/2">
@@ -137,19 +149,19 @@
                                     </p>
                                 </div>
                                 <div class="flex gap-6 items-center">
-                                    <label class="inline-flex items-center gap-2">
-                                        <input type="radio" name="design_type" value="standard" class="design-radio"
+                                    <label class="inline-flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="design_type" value="standard" class="design-radio appearance-none border border-gray-300 rounded-full w-3 h-3 checked:bg-blue-500 checked:border-blue-500 transition"
                                             checked>
                                         Standard
                                     </label>
-                                    <label class="inline-flex items-center gap-2">
-                                        <input type="radio" name="design_type" value="custom" class="design-radio">
+                                    <label class="inline-flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="design_type" value="custom" class="design-radio appearance-none border border-gray-300 rounded-full w-3 h-3 checked:bg-blue-500 checked:border-blue-500 transition">
                                         Custom
                                     </label>
                                 </div>
     
                                 <div class="col-span-full border border-dashed rounded-lg bg-gray-50 mt-3 hidden transition-colors duration-200" id="customDesignDiv">
-                                    <div class="mt-2 flex justify-center border-white/50 px-6 py-10 transition-colors duration-200">
+                                    <div class="flex justify-center border-white/50 px-6 py-10 transition-colors duration-200">
                                         <div class="text-center w-full">
                                             <svg viewBox="0 0 24 24" fill="currentColor" data-slot="icon" aria-hidden="true"
                                                 class="mx-auto size-12 text-gray-600">

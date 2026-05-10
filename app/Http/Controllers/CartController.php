@@ -49,62 +49,83 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity'   => 'nullable|integer|min:1',
-            'material'   => 'required|string',
-            'warna'      => 'nullable|string',
-            'file'       => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'note'       => 'nullable|string',
-            'design_type'=> 'nullable|string' 
+            'product_id'  => 'required|exists:products,id',
+            'quantity'    => 'nullable|integer|min:1|max:9999',
+            'material'    => 'required|string|max:100',
+            'warna'       => 'nullable|string|max:100',
+            'custom_file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,gif,webp|max:5120',
+            'note'        => 'nullable|string|max:500',
+            'design_type' => 'nullable|string|in:standard,custom'
+        ], [
+            'custom_file.mimes' => 'File harus berformat JPG, PNG, PDF, GIF, atau WEBP',
+            'custom_file.max' => 'Ukuran file tidak boleh lebih dari 5MB',
+            'quantity.max' => 'Jumlah tidak boleh lebih dari 9999',
         ]);
 
         $userId = Auth::id();
         if(!$userId) {
             return redirect()->route('login')
-                ->withErrors(['auth' => 'silahkan login terlebih dahulu']);
+                ->withErrors(['auth' => 'Silahkan login terlebih dahulu']);
         }
 
-        $productId = $request->product_id;
-        $qty = $request->quantity ?? 1;
-        $material = $request->material;
-        $warna = $request->warna;
-        $note = $request->note;
-        
-        $filePath = 'Standard'; // Default
+        try {
+            $productId = $request->product_id;
+            $qty = $request->quantity ?? 1;
+            $material = $request->material;
+            $warna = $request->warna;
+            $note = $request->note;
+            $designType = $request->input('design_type', 'standard');
+            
+            $filePath = 'Standard'; // Default
 
-        // A. Jika User Upload File
-        if ($request->hasFile('custom_file')) {
-            $filePath = $request->file('custom_file')->store('custom_uploads', 'public');
-        } 
-        // B. Jika User Pilih Radio Button "Custom" tapi tidak upload file (misal request desain)
-        elseif ($request->input('design_type') === 'custom') {
-            $filePath = 'Custom Request'; 
+            // A. Jika User Upload File
+            if ($request->hasFile('custom_file')) {
+                $file = $request->file('custom_file');
+                // Validasi MIME type tambahan
+                $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
+                if (!in_array($file->getMimeType(), $allowedMimes)) {
+                    return redirect()->back()->with('error', 'Tipe file tidak diizinkan. Gunakan JPG, PNG, GIF, WEBP, atau PDF.');
+                }
+                
+                $filePath = $file->store('custom_uploads', 'public');
+            } 
+            // B. Jika User Pilih Radio Button "Custom" tapi tidak upload file
+            elseif ($designType === 'custom') {
+                $filePath = 'Custom Request'; 
+            }
+
+            // Cek Item Duplikat (Merge Quantity)
+            $existingCart = Cart::where('user_id', $userId)
+                ->where('product_id', $productId)
+                ->where('material', $material)
+                ->where('warna', $warna)
+                ->where('custom_file', $filePath) 
+                ->first();
+
+            if ($existingCart) {
+                $newQty = $existingCart->quantity + $qty;
+                if ($newQty > 9999) {
+                    return redirect()->back()->with('error', 'Jumlah total tidak boleh lebih dari 9999');
+                }
+                $existingCart->increment('quantity', $qty);
+            } else {
+                Cart::create([
+                    'user_id'     => $userId,
+                    'product_id'  => $productId,
+                    'quantity'    => $qty,
+                    'material'    => $material,   
+                    'warna'       => $warna,      
+                    'custom_file' => $filePath,
+                    'note'        => $note,       
+                    'is_selected' => true
+                ]);
+            }
+
+            return redirect()->route('cart')->with('success', 'Produk berhasil ditambahkan ke keranjang!');
+        } catch (\Exception $e) {
+            \Log::error('Cart Store Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menambahkan produk ke keranjang. Silakan coba lagi.');
         }
-
-        // Cek Item Duplikat (Merge Quantity)
-        $existingCart = Cart::where('user_id', $userId)
-            ->where('product_id', $productId)
-            ->where('material', $material)
-            ->where('warna', $warna)
-            ->where('custom_file', $filePath) 
-            ->first();
-
-        if ($existingCart) {
-            $existingCart->increment('quantity', $qty);
-        } else {
-            Cart::create([
-                'user_id'     => $userId,
-                'product_id'  => $productId,
-                'quantity'    => $qty,
-                'material'    => $material,   
-                'warna'       => $warna,      
-                'custom_file' => $filePath,
-                'note'        => $note,       
-                'is_selected' => true
-            ]);
-        }
-
-        return redirect()->route('cart')->with('success', 'Produk berhasil ditambahkan!');
     }
 
     public function update(Request $request, $id)

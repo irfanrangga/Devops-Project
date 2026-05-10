@@ -9,6 +9,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\DesignFileController;
 use App\Http\Controllers\Auth\GoogleController;
 
 // HOME
@@ -58,6 +59,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/payment/{id}', [CheckoutController::class, 'show'])->name('payment.show');
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+
+    // Design File Routes (Download & View)
+    Route::get('/order/{orderId}/item/{itemId}/download', [DesignFileController::class, 'download'])->name('design.download');
+    Route::get('/order/{orderId}/item/{itemId}/view', [DesignFileController::class, 'view'])->name('design.view');
+    Route::post('/design/upload', [DesignFileController::class, 'upload'])->name('design.upload');
 
     Route::get('/dashboard', function () {
         return redirect(config('filament.path', 'admin'));

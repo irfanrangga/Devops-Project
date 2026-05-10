@@ -37,9 +37,10 @@
                 @if(Auth::check())
                     <div class="group relative">
                         <a href="{{ route('profile') }}"
-                            class="flex items-center gap-2 text-gray-700 hover:text-brand-blue transition">
-                            <i class="fa-regular fa-user text-xl group-hover:text-brand-blue"></i>
-                            <span class="font-medium text-[15px]">{{ Auth::user()->name }}</span>
+                            class="flex items-center gap-2 text-gray-700 hover:text-brand-blue hover:bg-blue-50 transition rounded-md p-2">
+                            {{-- <i class="fa-regular fa-user text-xl group-hover:text-brand-blue"></i> --}}
+                            <img src="{{ Auth::user()->avatar ?? asset('assets/icon/profile.png') }}" alt="{{ Auth::user()->name }}" class="w-7 h-7 rounded-full object-cover border border-blue-300">
+                            {{-- <span class="font-medium text-[15px]">{{ Auth::user()->name }}</span> --}}
                             <i class="fa-solid fa-caret-down text-xs ml-1"></i>
                         </a>
 
@@ -50,7 +51,7 @@
                                 class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition">
                                 <i class="fa-solid fa-gear"></i> Profile
                             </a>
-                            @if (Auth::user()->is_admin)
+                            @if (Auth::user()->role === 'admin')
                                 @csrf
                                 <a href="{{ route('dashboard') }}"
                                     class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition">
@@ -71,7 +72,7 @@
                     <a href="{{ route('login') }}"
                         class="flex items-center gap-2 text-gray-700 hover:text-brand-blue transition group">
                         <i class="fa-regular fa-user text-xl group-hover:text-brand-blue"></i>
-                        <span class="font-medium text-[15px]">Masuk/Daftar</span>
+                        <span class="font-medium text-[15px]">Masuk</span>
                     </a>
                 @endif
             </div>
