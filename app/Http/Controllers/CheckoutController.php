@@ -56,7 +56,24 @@ class CheckoutController extends Controller
             $customFilePath = null;
             if ($designType === 'custom' && $request->hasFile('custom_file')) {
                 $file = $request->file('custom_file');
-                $customFilePath = $file->store('storage/custom_uploads', 'public');
+                
+                // Validasi file MIME type
+                $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
+                if (!in_array($file->getMimeType(), $allowedMimes)) {
+                    return redirect()->back()->with('error', 'Format file tidak diizinkan. Gunakan JPG, PNG, GIF, WEBP, atau PDF.');
+                }
+                
+                // Validasi ukuran file (5MB = 5120 KB)
+                if ($file->getSize() > 5242880) { // 5MB in bytes
+                    return redirect()->back()->with('error', 'Ukuran file tidak boleh lebih dari 5MB.');
+                }
+                
+                try {
+                    $customFilePath = $file->store('custom_uploads', 'public');
+                } catch (\Exception $e) {
+                    \Log::error('File upload error: ' . $e->getMessage());
+                    return redirect()->back()->with('error', 'Gagal mengupload file. Silakan coba lagi.');
+                }
             }
 
             $cartItems->push((object) [

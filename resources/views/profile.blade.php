@@ -308,7 +308,6 @@
                     </div>
                 @break
 
-                {{-- ========================================================== --}}
                 {{-- KONTEN BARU: RIWAYAT PESANAN --}}
                 {{-- ========================================================== --}}
                 @case('riwayat-pesanan')
@@ -317,83 +316,165 @@
 
                     <div class="space-y-6">
                         @forelse($orders as $order)
-                            <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow duration-300">
+                            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-300">
                                 {{-- Header Card: No Invoice & Status --}}
-                                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-gray-100 pb-4 mb-4">
-                                    <div>
-                                        <div class="flex items-center gap-3 mb-1">
-                                            <span class="font-mono text-sm font-bold text-gray-500">#{{ $order->number }}</span>
-                                            <span class="text-xs text-gray-400">• {{ $order->created_at?->format('d M Y, H:i') }}</span>
+                                <div class="bg-gradient-to-r from-gray-50 to-gray-100 p-4 md:p-6 border-b border-gray-200">
+                                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                                        <div>
+                                            <div class="flex items-center gap-3 mb-2">
+                                                <span class="font-mono text-sm font-bold text-gray-600 bg-gray-200 px-3 py-1 rounded-full">#{{ $order->number }}</span>
+                                                <span class="text-xs text-gray-500">{{ $order->created_at?->format('d M Y, H:i') }}</span>
+                                            </div>
+                                            
+                                            {{-- Logic Status Badge --}}
+                                            @if($order->payment_status == '2')
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                    <i class="fa-solid fa-check-circle mr-1.5"></i> Lunas
+                                                </span>
+                                            @elseif($order->payment_status == '3')
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                                    <i class="fa-solid fa-circle-xmark mr-1.5"></i> Expired / Batal
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 animate-pulse">
+                                                    <i class="fa-solid fa-clock mr-1.5"></i> Menunggu Pembayaran
+                                                </span>
+                                            @endif
                                         </div>
-                                        
-                                        {{-- Logic Status Badge --}}
-                                        @if($order->payment_status == '2')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                <i class="fa-solid fa-check-circle mr-1"></i> Lunas
-                                            </span>
-                                        @elseif($order->payment_status == '3')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                <i class="fa-solid fa-circle-xmark mr-1"></i> Expired / Batal
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 animate-pulse">
-                                                <i class="fa-solid fa-clock mr-1"></i> Menunggu Pembayaran
-                                            </span>
-                                        @endif
-                                    </div>
 
-                                    {{-- Tombol Aksi --}}
-                                    <div>
-                                        
-                                        @if($order->payment_status == '1')
-                                            <a href="{{ route('payment.show', $order->id) }}" 
-                                               class="inline-block px-4 py-2 bg-brand-blue text-white text-sm font-bold rounded-lg hover:bg-brand-dark transition shadow-sm shadow-blue-300">
-                                                Bayar Sekarang
-                                            </a>
-                                        @else
-                                            <a href="{{ route('payment.show', $order->id) }}" 
-                                               class="inline-block px-4 py-2 border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition">
-                                                Lihat Detail
-                                            </a>
-                                        @endif
+                                        {{-- Tombol Aksi --}}
+                                        <div class="flex gap-2">
+                                            @if($order->payment_status == '1')
+                                                <a href="{{ route('payment.show', $order->id) }}" 
+                                                   class="inline-flex items-center gap-2 px-4 py-2 bg-brand-blue text-white text-sm font-bold rounded-lg hover:bg-brand-dark transition shadow-sm">
+                                                    <i class="fa-solid fa-credit-card"></i> Bayar
+                                                </a>
+                                            @else
+                                                <a href="{{ route('payment.show', $order->id) }}" 
+                                                   class="inline-flex items-center gap-2 px-4 py-2 border border-brand-blue text-brand-blue text-sm font-semibold rounded-lg hover:bg-blue-50 transition">
+                                                    <i class="fa-solid fa-eye"></i> Detail
+                                                </a>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
 
-                                {{-- List Barang (Preview) --}}
-                                <div class="space-y-3">
+                                {{-- List Barang & File Desain --}}
+                                <div class="p-4 md:p-6 space-y-4">
                                     @foreach($order->items as $item)
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 border border-gray-200">
-                                                @if($item->product)
-                                                    <img src="{{ asset($item->product->file) }}" class="w-full h-full object-cover">
-                                                @else
-                                                    <div class="flex items-center justify-center h-full text-gray-400"><i class="fa-solid fa-image"></i></div>
+                                        <div class="border border-gray-100 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                                            <div class="flex items-start gap-4 mb-3">
+                                                <div class="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 border border-gray-200">
+                                                    @if($item->product)
+                                                        <img src="{{ asset($item->product->file) }}" class="w-full h-full object-cover">
+                                                    @else
+                                                        <div class="flex items-center justify-center h-full text-gray-400"><i class="fa-solid fa-image text-sm"></i></div>
+                                                    @endif
+                                                </div>
+                                                <div class="flex-1">
+                                                    <h4 class="font-semibold text-gray-900 text-sm">{{ $item->product_name }}</h4>
+                                                    <p class="text-xs text-gray-500">{{ $item->quantity }} x Rp {{ number_format($item->product_price, 0, ',', '.') }}</p>
+                                                </div>
+                                                <span class="text-sm font-bold text-brand-blue">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                                            </div>
+
+                                            {{-- Spesifikasi Produk --}}
+                                            <div class="flex flex-wrap gap-2 mb-3">
+                                                @if($item->bahan)
+                                                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                                                        <i class="fa-solid fa-shirt text-gray-500 text-xs"></i> {{ $item->bahan }}
+                                                    </span>
+                                                @endif
+                                                @if($item->warna)
+                                                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                                                        <i class="fa-solid fa-palette text-gray-500 text-xs"></i> {{ $item->warna }}
+                                                    </span>
                                                 @endif
                                             </div>
-                                            <div class="flex-1">
-                                                <h4 class="text-sm font-semibold text-gray-900 line-clamp-1">{{ $item->product_name }}</h4>
-                                                <p class="text-xs text-gray-500">{{ $item->quantity }} x Rp {{ number_format($item->product_price, 0, ',', '.') }}</p>
-                                            </div>
+
+                                            {{-- File Desain Custom --}}
+                                            @if(!empty($item->custom_file) && $item->custom_file !== 'null' && strtolower($item->custom_file) !== 'standard')
+                                                <div class="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 flex items-center justify-between hover:shadow transition-all">
+                                                    <div class="flex items-center gap-2.5 flex-1">
+                                                        @php
+                                                            $fileExtension = strtolower(pathinfo($item->custom_file, PATHINFO_EXTENSION));
+                                                            $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                                            $isPdf = $fileExtension === 'pdf';
+                                                        @endphp
+                                                        
+                                                        @if($isImage)
+                                                            <i class="fa-solid fa-image text-lg text-blue-500"></i>
+                                                        @elseif($isPdf)
+                                                            <i class="fa-solid fa-file-pdf text-lg text-red-500"></i>
+                                                        @else
+                                                            <i class="fa-solid fa-file text-lg text-blue-500"></i>
+                                                        @endif
+                                                        <div>
+                                                            <p class="text-xs font-bold text-blue-600 uppercase tracking-wide">File Desain Custom</p>
+                                                            <p class="text-xs font-medium text-gray-700 truncate">{{ basename($item->custom_file) }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex gap-1.5">
+                                                        @if($isImage)
+                                                            <button onclick="viewDesignModal('{{ route('design.view', ['orderId' => $order->id, 'itemId' => $item->id]) }}')" 
+                                                                    class="p-1.5 text-blue-600 hover:bg-blue-100 rounded transition" title="Lihat Desain">
+                                                                <i class="fa-solid fa-eye text-sm"></i>
+                                                            </button>
+                                                        @endif
+                                                        <a href="{{ route('design.download', ['orderId' => $order->id, 'itemId' => $item->id]) }}" 
+                                                           download
+                                                           class="p-1.5 text-blue-600 hover:bg-blue-100 rounded transition" 
+                                                           title="Download file">
+                                                            <i class="fa-solid fa-download text-sm"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            {{-- Catatan --}}
+                                            @if($item->note)
+                                                <div class="mt-2 text-xs text-gray-600 bg-gray-50 p-2.5 rounded border border-dashed border-gray-300">
+                                                    <p class="font-semibold text-gray-700"><i class="fa-regular fa-comment-dots mr-1.5"></i> Catatan:</p>
+                                                    <p class="text-gray-600">{{ $item->note }}</p>
+                                                </div>
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>
 
-                                {{-- Footer Card: Total Harga --}}
-                                <div class="mt-4 pt-3 border-t border-dashed border-gray-100 flex justify-between items-center">
-                                    <span class="text-sm text-gray-500">Total Tagihan</span>
+                                {{-- Footer: Total Harga --}}
+                                <div class="bg-gray-50 px-4 md:px-6 py-4 border-t border-gray-200 flex justify-between items-center">
+                                    <span class="text-sm font-semibold text-gray-600">Total Tagihan</span>
                                     <span class="text-lg font-bold text-brand-blue">Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
                                 </div>
                             </div>
 
                         @empty
-                            <div class="col-span-full text-center py-10 border border-dashed border-gray-300 rounded-xl bg-gray-50">
+                            <div class="text-center py-12 border border-dashed border-gray-300 rounded-xl bg-gray-50">
                                 <i class="fa-solid fa-clipboard-list text-5xl text-gray-400 mb-4"></i>
-                                <p class="text-gray-600 font-medium">Belum ada riwayat pesanan.</p>
-                                <a href="{{ route('product.index') }}" class="text-brand-blue hover:underline text-sm mt-2 block">
-                                    Mulai Belanja Sekarang
+                                <p class="text-gray-600 font-medium mb-2">Belum ada riwayat pesanan.</p>
+                                <p class="text-sm text-gray-500 mb-4">Mulai berbelanja dan setiap pesanan akan muncul di sini.</p>
+                                <a href="{{ route('product.index') }}" class="inline-flex items-center gap-2 text-brand-blue hover:underline text-sm font-semibold">
+                                    <i class="fa-solid fa-shopping-bag"></i> Belanja Sekarang
                                 </a>
                             </div>
                         @endforelse
+                    </div>
+
+                    {{-- Modal untuk preview desain --}}
+                    <div id="designModalProfile" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white rounded-lg max-w-2xl w-full mx-4 overflow-hidden shadow-2xl">
+                            <div class="bg-gray-900 p-4 flex justify-between items-center">
+                                <h3 class="text-white font-bold text-lg">Preview Desain</h3>
+                                <button onclick="closeDesignModalProfile()" class="text-white hover:text-gray-300 text-2xl font-light">×</button>
+                            </div>
+                            <div class="p-6 text-center bg-gray-50 max-h-96 overflow-auto flex items-center justify-center">
+                                <img id="modalDesignImageProfile" src="" alt="Desain" class="max-w-full max-h-96 object-contain rounded">
+                            </div>
+                            <div class="bg-gray-100 p-4 text-right border-t">
+                                <button onclick="closeDesignModalProfile()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg transition font-medium">Tutup</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 @break
@@ -439,6 +520,36 @@
                     icon.classList.add('fa-xmark');
                 }
             });
+        });
+
+        // Fungsi untuk menampilkan desain di modal (untuk profil)
+        function viewDesignModal(imageUrl) {
+            const modal = document.getElementById('designModalProfile');
+            const modalImage = document.getElementById('modalDesignImageProfile');
+            
+            if (modal) {
+                modalImage.src = imageUrl;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeDesignModalProfile() {
+            const modal = document.getElementById('designModalProfile');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // Close modal jika klik di luar area modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('designModalProfile');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeDesignModalProfile();
+                    }
+                });
+            }
         });
     </script>
 </body>
