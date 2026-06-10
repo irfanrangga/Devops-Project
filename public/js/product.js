@@ -305,6 +305,55 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    const button = document.getElementById('rating-button');
+    const menu = document.getElementById('rating-menu');
+    const text = document.getElementById('rating-text');
+    const input = document.getElementById('rating-input');
+    const arrow = document.getElementById('rating-arrow');
+    const options = document.querySelectorAll('.rating-option');
+    
+    // Fungsi untuk membuka/menutup dropdown
+    function toggleMenu() {
+        const isClosed = menu.classList.contains('opacity-0');
+        
+        if (isClosed) {
+            // Animasi Buka
+            menu.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+            menu.classList.add('opacity-100', 'scale-100');
+            arrow.classList.add('rotate-180');
+        } else {
+            // Animasi Tutup
+            closeMenu();
+        }
+    }
+    function closeMenu() {
+        menu.classList.remove('opacity-100', 'scale-100');
+        menu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+        arrow.classList.remove('rotate-180');
+    }
+    // Event listener saat tombol utama ditekan
+    button.addEventListener('click', toggleMenu);
+    // Event listener saat salah satu opsi bintang dipilih
+    options.forEach(option => {
+        option.addEventListener('click', function() {
+            // Masukkan nilai angka ke input hidden
+            input.value = this.getAttribute('data-value');
+            // Ubah teks tombol menjadi opsi yang dipilih
+            text.innerHTML = this.innerHTML;
+            text.classList.remove('text-gray-500');
+            text.classList.add('text-gray-900');
+            
+            closeMenu();
+        });
+    });
+    // Menutup dropdown secara otomatis jika user mengklik area luar
+    document.addEventListener('click', function(event) {
+        const container = document.getElementById('rating-dropdown-container');
+        if (!container.contains(event.target)) {
+            closeMenu();
+        }
+    });
 });
 
 

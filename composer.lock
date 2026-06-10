@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1fcca04bdf76dceee294e8ea86e2e51d",
+    "content-hash": "b09b99a00c902cb1e8b9da3736b6cc1d",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -8894,16 +8894,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.58.0",
+            "version": "v1.62.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "2e5e968138ca52ed87d712449697a8364d73b466"
+                "reference": "3aaeefc979f8ba6586fbc5b6e0b1b3638058f98e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/2e5e968138ca52ed87d712449697a8364d73b466",
-                "reference": "2e5e968138ca52ed87d712449697a8364d73b466",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/3aaeefc979f8ba6586fbc5b6e0b1b3638058f98e",
+                "reference": "3aaeefc979f8ba6586fbc5b6e0b1b3638058f98e",
                 "shasum": ""
             },
             "require": {
@@ -8953,7 +8953,7 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
-            "time": "2026-04-27T13:38:34+00:00"
+            "time": "2026-05-27T04:02:01+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -10939,7 +10939,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2",
+        "php": "^8.4",
         "ext-intl": "*",
         "ext-zip": "*"
     },
