@@ -6,18 +6,18 @@ use App\Models\Order;
 use App\Models\User;
 use App\PaymentStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class PaymentControllerTest extends TestCase
 {
     use RefreshDatabase;
-    
-    // TC-11-01 Menguji exception jika ID order tidak valid atau id pengguna tidak sesuai dengan yang terautentikasi di session.
-    public function test_show_returns_404_if_order_not_found()
-    {
-        $userOne = User::factory()->create(['id' => 1]);
-        $this->actingAs($userOne);
+
+    // TC-11-01 Menguji exception jika ID order tidak valid atau id pengguna tidak sesuai
+    public function test_show_return_404_if_user_unauthorized(){
+        $userActive = User::factory()->create(['id' => 1]);
+        $this->actingAs($userActive);
 
         $userTwo = User::factory()->create(['id' => 2]);
 
@@ -26,11 +26,11 @@ class PaymentControllerTest extends TestCase
             'user_id' => $userTwo->id,
         ]);
 
-        $responseNonExistent = $this->get(route('payment.show', 999));
-        $responseNonExistent->assertNotFound();
+        $responseNonExist = $this->get(route('payment.show', 9999));
+        $responseNonExist->assertNotFound();
 
-        $responseAuthorized = $this->get(route('payment.show', $orderUserTwo->id));
-        $responseAuthorized->assertNotFound();
+        $responseUnauthorized = $this->get(route('payment.show', $orderUserTwo->id));
+        $responseUnauthorized->assertNotFound();
     }
 
     // TC-11-02 Menguji pesanan yang ditemukan namun status pembayaran tidak sama dengan 1 (unpaid).
@@ -90,11 +90,9 @@ class PaymentControllerTest extends TestCase
         $user = User::factory()->create(['id' => 1]);
         $this->actingAs($user);
 
-        // Membekukan waktu (Mocking Time) agar presisi saat pengujian
         $knownDate = Carbon::create(2026, 5, 11, 12, 0, 0);
         Carbon::setTestNow($knownDate);
 
-        // Buat pesanan dibuat 13 jam yang lalu (melebihi batas 12 jam)
         $order = Order::factory()->create([
             'id' => 5,
             'user_id' => $user->id,
@@ -104,24 +102,19 @@ class PaymentControllerTest extends TestCase
         ]);
 
         $response = $this->get(route('payment.show', $order->id));
-
-        // Ekspektasi: Sistem mengupdate nilai status menjadi 3 (cancelled)
         $response->assertStatus(200);
         $response->assertViewIs('payment');
 
-        // Verifikasi perubahan di database
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'payment_status' => PaymentStatus::EXPIRED->value,
             'order_status' => 'cancelled',
         ]);
 
-        // Verifikasi data objek yang dikirim ke view juga sudah ter-refresh
         $viewOrder = $response->original->getData()['order'];
         $this->assertEquals(PaymentStatus::EXPIRED->value, $viewOrder->payment_status);
         $this->assertEquals('cancelled', $viewOrder->order_status);
 
-        // Reset waktu kembali normal
         Carbon::setTestNow();
     }
 }

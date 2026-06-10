@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
     // PEMBARUAN DATA PENGGUNA (Update Info & Password)
     Route::put('/profile/update-info', [ProfileController::class, 'updateUserInfo'])->name('profile.update-info');
     Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
-
+    
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::post('/cart/add', [CartController::class, 'store'])->name('cart.store');
     Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/payment/{id}', [CheckoutController::class, 'show'])->name('payment.show');
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::post('/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 
     // Design File Routes (Download & View)
     Route::get('/order/{orderId}/item/{itemId}/download', [DesignFileController::class, 'download'])->name('design.download');
