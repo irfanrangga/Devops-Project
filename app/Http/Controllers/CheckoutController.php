@@ -23,9 +23,6 @@ class CheckoutController extends Controller
         Configuration::setXenditKey(env('XENDIT_SECRET_KEY'));
     }
 
-    /**
-     * Memproses Checkout (Pindah Data Cart -> Order & Create Xendit Invoice)
-     */
     public function process(Request $request)
     {
         $userId = Auth::id();
@@ -34,13 +31,9 @@ class CheckoutController extends Controller
                 ->route('login')
                 ->withErrors(['auth' => 'Silahkan login terlebih dahulu']);
         }
-        // Support dua mode checkout:
-        // - Dari keranjang: tanpa product_id -> ambil item yang is_selected di cart
-        // - Direct purchase: ada product_id dari product-detail form
 
         $cartItems = collect();
 
-        // 1. Logika Pengambilan Item
         if ($request->filled('product_id')) {
             $productId = $request->input('product_id');
             $quantity = max(1, (int) $request->input('quantity', 1));
@@ -57,21 +50,19 @@ class CheckoutController extends Controller
             if ($designType === 'custom' && $request->hasFile('custom_file')) {
                 $file = $request->file('custom_file');
                 
-                // Validasi file MIME type
                 $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
                 if (!in_array($file->getMimeType(), $allowedMimes)) {
                     return redirect()->back()->with('error', 'Format file tidak diizinkan. Gunakan JPG, PNG, GIF, WEBP, atau PDF.');
                 }
                 
-                // Validasi ukuran file (5MB = 5120 KB)
-                if ($file->getSize() > 5242880) { // 5MB in bytes
+                if ($file->getSize() > 5242880) { 
                     return redirect()->back()->with('error', 'Ukuran file tidak boleh lebih dari 5MB.');
                 }
                 
                 try {
                     $customFilePath = $file->store('custom_uploads', 'public');
                 } catch (\Exception $e) {
-                    \Log::error('File upload error: ' . $e->getMessage());
+                    \Illuminate\Support\Facades\Log::error('File upload error: ' . $e->getMessage());
                     return redirect()->back()->with('error', 'Gagal mengupload file. Silakan coba lagi.');
                 }
             }
@@ -115,9 +106,6 @@ class CheckoutController extends Controller
             $subtotal += ($finalUnitPrice * $qty);
         }
 
-        // ============================================================
-        // 3. INTEGRASI NODE.JS UNTUK ONGKIR
-        // ============================================================
         $shippingCost = 0;
         $userLocation = $user->location ?? 'Jakarta'; 
 
@@ -245,9 +233,7 @@ class CheckoutController extends Controller
     {
         $order = Order::with('items')->where('user_id', Auth::id())->findOrFail($id);
 
-        // Auto-Expire saat halaman dibuka
         if ($order->payment_status == '1') {
-            // Ubah ke addSeconds(10) jika ingin test cepat, atau addHours(12) untuk production
             $expiredTime = $order->created_at->addHours(12); 
 
             if (now() > $expiredTime) {

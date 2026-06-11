@@ -1,8 +1,9 @@
 @php
-    $jwtToken = session('jwt_token');
+    $session = Auth::user();
 @endphp
 
-@if($jwtToken)
+@if($session)
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div class="fixed bottom-5 right-5 z-50 flex flex-col items-end space-y-2 font-sans">
 
@@ -56,8 +57,9 @@
     <script>
         (function() {
             const config = {
-                token: "{{ $jwtToken }}",
-                apiBaseUrl: "http://localhost:3000/v1/api"
+                getUrl: "{{ route('chat.get') }}",
+                postUrl: "{{ route('chat.store') }}",
+                csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             };
 
             const els = {
@@ -105,9 +107,8 @@
 
             async function loadMessages() {
                 try {
-                    const res = await fetch(`${config.apiBaseUrl}/chat/messages`, {
-                        method: 'GET',
-                        headers: { 'Authorization': `Bearer ${config.token}` }
+                    const res = await fetch(config.getUrl, {
+                        headers: { 'Accept': 'application/json' }
                     });
                     const result = await res.json();
                     if (result.status === 'success') renderMessages(result.data);
@@ -122,7 +123,7 @@
                 }
                 
                 messages.forEach(msg => {
-                    const isAdmin = msg.is_admin;
+                    const isAdmin = msg.is_admin == 1;
                     const bubble = isAdmin 
                         ? 'bg-white text-gray-800 border border-gray-100 items-start rounded-tl-none' 
                         : 'bg-blue-600 text-white items-end rounded-tr-none';
@@ -159,11 +160,12 @@
                 els.input.value = '';
 
                 try {
-                    await fetch(`${config.apiBaseUrl}/chat/messages`, {
+                    await fetch(config.postUrl, {
                         method: 'POST',
                         headers: { 
-                            'Authorization': `Bearer ${config.token}`,
-                            'Content-Type': 'application/json' 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': config.csrfToken
                         },
                         body: JSON.stringify({ message: msg })
                     });

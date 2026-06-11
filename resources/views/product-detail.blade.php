@@ -30,8 +30,32 @@
             <div class="container flex flex-col lg:flex-row gap-10 mt-4">
                 {{-- Gambar Produk --}}
                 <div class="w-full lg:w-1/2">
-                    <img class="w-full h-96 md:h-[32rem] rounded-xl object-cover border border-gray-200"
-                        src="{{ asset($product->file) }}" alt="{{ $product->nama }}">
+                    <div class="main-image-container mb-3">
+                        <img id="main-product-image"
+                            class="w-full h-96 md:h-[32rem] rounded-xl object-cover border border-gray-200"
+                            src="{{ asset($product->file) }}" alt="{{ $product->nama }}">
+                    </div>
+                    <div class="thumbnails-container flex gap-4 mt-4 w-full overflow-x-auto">
+                        <img src="{{ asset($product->file) }}" alt=""
+                            class="img-thumbnail w-32 h-32 object-cover border-2 border-blue-500 cursor-pointer rounded-md hover:opacity-100 transition"
+                            onclick="changeMainImage(this)">
+                        <img src="{{ asset(" assets/etalase_produk/majalah.jpeg") }}" alt=""
+                            class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition"
+                            onclick="changeMainImage(this)">
+                        <img src="{{ asset($product->file) }}" alt=""
+                            class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition"
+                            onclick="changeMainImage(this)">
+                        <img src="{{ asset($product->file) }}" alt=""
+                            class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition"
+                            onclick="changeMainImage(this)">
+                        <img src="{{ asset($product->file) }}" alt=""
+                            class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition"
+                            onclick="changeMainImage(this)">
+                    </div>
+                    <div class="my-8 flex flex-col justify-center gap-1">
+                        <h2 class="text-gray-300 text-md">*Harga belum termasuk ongkos kirim</h2>
+                        <h2 class="text-gray-300 text-md">**Pembelian produk dikenakan PPN 12%</h2>
+                    </div>
                 </div>
                 {{-- Deskripsi Produk --}}
                 <div class="w-full lg:w-1/2">
@@ -54,7 +78,8 @@
                                     <span class="text-sm text-gray-500 ml-2">({{ $rating }})</span>
                         </div>
                     </div>
-                    <form id="productForm" action="{{ route('cart.store') }}" method="POST" enctype="multipart/form-data">
+                    <form id="productForm" action="{{ route('cart.store') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                         <div class="flex flex-col my-2">
@@ -74,7 +99,8 @@
                                     <div class="flex justify-between mb-1 items-center">
                                         <label for="material" class="font-semibold text-gray-900 text-lg">Bahan</label>
                                         <p id="unitPrice" data-price="{{ $product->harga }}"
-                                            class="text-lg font-semibold text-gray-400">Rp{{ number_format($product->harga,
+                                            class="text-lg font-semibold text-gray-400">Rp{{
+                                            number_format($product->harga,
                                             0,
                                             ',', '.')
                                             }}</p>
@@ -94,7 +120,7 @@
                                     </div>
                                 </div>
                             </div>
-    
+
                             <div class="mb-5">
                                 <label for="warna" class="text-lg font-semibold text-gray-900">Warna</label>
                                 <div class="flex flex-wrap gap-2 mt-2">
@@ -122,7 +148,7 @@
                                     @endif
                                 </div>
                             </div>
-    
+
                             <div class="mb-5">
                                 <div class="flex justify-between mb-2 items-center">
                                     <label for="design_type" class="text-lg font-semibold text-gray-900">Desain</label>
@@ -137,22 +163,26 @@
                                     </p>
                                 </div>
                                 <div class="flex gap-6 items-center">
-                                    <label class="inline-flex items-center gap-2">
-                                        <input type="radio" name="design_type" value="standard" class="design-radio"
+                                    <label class="inline-flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="design_type" value="standard"
+                                            class="design-radio appearance-none border border-gray-300 rounded-full w-3 h-3 checked:bg-blue-500 checked:border-blue-500 transition"
                                             checked>
                                         Standard
                                     </label>
-                                    <label class="inline-flex items-center gap-2">
-                                        <input type="radio" name="design_type" value="custom" class="design-radio">
+                                    <label class="inline-flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="design_type" value="custom"
+                                            class="design-radio appearance-none border border-gray-300 rounded-full w-3 h-3 checked:bg-blue-500 checked:border-blue-500 transition">
                                         Custom
                                     </label>
                                 </div>
-    
-                                <div class="col-span-full border border-dashed rounded-lg bg-gray-50 mt-3 hidden transition-colors duration-200" id="customDesignDiv">
-                                    <div class="mt-2 flex justify-center border-white/50 px-6 py-10 transition-colors duration-200">
+
+                                <div class="col-span-full border border-dashed rounded-lg bg-gray-50 mt-3 hidden transition-colors duration-200"
+                                    id="customDesignDiv">
+                                    <div
+                                        class="flex justify-center border-white/50 px-6 py-10 transition-colors duration-200">
                                         <div class="text-center w-full">
-                                            <svg viewBox="0 0 24 24" fill="currentColor" data-slot="icon" aria-hidden="true"
-                                                class="mx-auto size-12 text-gray-600">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" data-slot="icon"
+                                                aria-hidden="true" class="mx-auto size-12 text-gray-600">
                                                 <path
                                                     d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
                                                     clip-rule="evenodd" fill-rule="evenodd" />
@@ -161,7 +191,8 @@
                                                 <label for="file-upload"
                                                     class="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-400 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-indigo-500 hover:text-indigo-300">
                                                     <span>Upload a file</span>
-                                                    <input id="file-upload" type="file" name="custom_file" class="sr-only" accept=".png,.jpg,.jpeg,.pdf"/>
+                                                    <input id="file-upload" type="file" name="custom_file"
+                                                        class="sr-only" accept=".png,.jpg,.jpeg,.pdf" />
                                                 </label>
                                                 <p class="pl-1">or drag and drop</p>
                                             </div>
@@ -170,7 +201,7 @@
                                     </div>
                                 </div>
                             </div>
-    
+
                             <div class="mb-5">
                                 <label for="quantity" class="text-lg font-semibold text-gray-900">Kuantitas</label>
                                 <div class="flex gap-3 items-center mt-2">
@@ -179,31 +210,34 @@
                                             class="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition bg-white">
                                             -
                                         </button>
-    
+
                                         <input type="text" name="quantity" id="quantityInput" value="1" min="1"
                                             data-max="{{ 9999 }}" onkeydown="return event.key !== 'Enter'"
                                             class="w-10 h-8 text-center text-sm border-none focus:ring-0 text-gray-900 bg-white">
-    
+
                                         <button type="button" id="qtyPlus"
                                             class="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition bg-white">
                                             +
                                         </button>
                                     </div>
-                                    {{-- <div class="text-md text-gray-500 ml-4">Stok: {{ number_format($product->stok ?? 0, 0,
+                                    {{-- <div class="text-md text-gray-500 ml-4">Stok: {{ number_format($product->stok
+                                        ?? 0, 0,
                                         ',', '.') }}</div> --}}
                                 </div>
                             </div>
-    
+
                             <div class="mb-5">
                                 <label for="note" class="text-lg font-semibold text-gray-900">Catatan</label>
-                                <textarea name="note" id="note" cols="30" rows="2" class="border rounded-md w-full p-3 mt-2"
+                                <textarea name="note" id="note" cols="30" rows="2"
+                                    class="border rounded-md w-full p-3 mt-2"
                                     placeholder="Contoh: Warna dibuat agak terang"></textarea>
                             </div>
-    
+
                         </div>
                         <div class="border my-5"></div>
                         <div class="flex justify-between">
-                            <h3 class="text-2xl font-bold text-gray-900">Subtotal</h3>
+                            <h3 class="text-2xl font-bold text-gray-900">Subtotal<span
+                                    class="text-gray-300 font-light">*</span></h3>
                             <p id="totalPrice" class="text-2xl font-semibold text-blue-600">
                                 <span id="subtotalText">Rp {{ number_format($product->harga, 0, ',', '.') }}</span>
                             </p>
@@ -218,6 +252,155 @@
                                 Langsung</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </section>
+        {{-- Ulasan Pengguna --}}
+        <section>
+            <div class="container w-full mt-32">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Ulasan Pengguna</h2>
+                @if(session('success'))
+                <div>
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                        role="alert">
+                        <span class="block sm:inline">{{ session('success') }}</span>
+                    </div>
+                </div>
+                @endif
+
+                <div class="space-y-4 mb-8">
+                    @forelse($product->reviews as $review)
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                {{-- Avatar Pengguna (Menggunakan logika avatar sebelumnya) --}}
+                                <img src="{{ $review->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) . '&background=random' }}"
+                                    alt="{{ $review->user->name }}" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">{{ $review->user->name }}</h4>
+                                    <p class="text-xs text-gray-500">{{ $review->created_at->diffForHumans() }}</p>
+                                </div>
+                            </div>
+                            {{-- Bintang Rating --}}
+                            <div class="flex text-yellow-400 text-sm">
+                                @for($i = 1; $i <= 5; $i++) 
+                                    @if($i <=$review->rating)
+                                        <i class="fa-solid fa-star"></i>
+                                    @else
+                                        <i class="fa-regular fa-star text-gray-300"></i>
+                                    @endif
+                                @endfor
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mt-3">{{ $review->comment }}</p>
+                    </div>
+                    @empty
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                        <p class="text-gray-500">Belum ada ulasan untuk produk ini. Jadilah yang pertama memberikan
+                            ulasan!</p>
+                    </div>
+                    @endforelse
+                </div>
+                @auth
+                <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tulis Ulasan Anda</h3>
+
+                    {{-- Arahkan ke route store yang ada di ReviewController --}}
+                    <form action="{{ route('reviews.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                        {{-- Pilihan Rating (Bintang) --}}
+                        <div class="mb-4">
+                            {{-- Pilihan Rating (Custom Dropdown Smooth) --}}
+                            <div class="mb-4 relative" id="rating-dropdown-container">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Penilaian</label>
+
+                                {{-- Input tersembunyi ini yang akan dikirim ke controller Laravel --}}
+                                <input type="hidden" name="rating" id="rating-input" value="{{ old('rating') }}"
+                                    required>
+
+                                {{-- Tombol Pemicu Dropdown --}}
+                                <button type="button" id="rating-button"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 flex justify-between items-center text-left transition-colors">
+                                    <span id="rating-text" class="text-gray-500">Pilih Bintang...</span>
+                                    <svg class="w-4 h-4 ml-2 text-gray-500 transition-transform duration-200"
+                                        id="rating-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+
+                                {{-- Menu Opsi (Dengan Efek Transisi Tailwind) --}}
+                                <div id="rating-menu"
+                                    class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 scale-95 pointer-events-none transform origin-top transition-all duration-200 ease-out">
+                                    <ul class="py-1 text-sm text-gray-700">
+                                        <li><button type="button" data-value="5"
+                                                class="rating-option w-full text-left px-4 py-2 hover:bg-blue-50 hover:text-blue-700 transition-colors">⭐⭐⭐⭐⭐
+                                                - Sangat Bagus</button></li>
+                                        <li><button type="button" data-value="4"
+                                                class="rating-option w-full text-left px-4 py-2 hover:bg-blue-50 hover:text-blue-700 transition-colors">⭐⭐⭐⭐
+                                                - Bagus</button></li>
+                                        <li><button type="button" data-value="3"
+                                                class="rating-option w-full text-left px-4 py-2 hover:bg-blue-50 hover:text-blue-700 transition-colors">⭐⭐⭐
+                                                - Cukup</button></li>
+                                        <li><button type="button" data-value="2"
+                                                class="rating-option w-full text-left px-4 py-2 hover:bg-blue-50 hover:text-blue-700 transition-colors">⭐⭐
+                                                - Kurang</button></li>
+                                        <li><button type="button" data-value="1"
+                                                class="rating-option w-full text-left px-4 py-2 hover:bg-blue-50 hover:text-blue-700 transition-colors">⭐
+                                                - Sangat Kurang</button></li>
+                                    </ul>
+                                </div>
+                                @error('rating')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Kolom Komentar --}}
+                        <div class="mb-4">
+                            <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">Komentar
+                                (Opsional)</label>
+                            <textarea id="comment" name="comment" rows="4"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                placeholder="Bagaimana kualitas hasil cetak dan pelayanannya?">{{ old('comment') }}</textarea>
+                            @error('comment')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button type="submit"
+                            class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors">
+                            Kirim Ulasan
+                        </button>
+                    </form>
+                </div>
+                @else
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center mt-6">
+                    <p class="text-blue-800 mb-3">Anda harus masuk untuk dapat memberikan ulasan.</p>
+                    <a href="{{ route('login') }}"
+                        class="inline-block bg-blue-600 text-white font-medium px-4 py-2 rounded shadow hover:bg-blue-700 transition">Login
+                        Sekarang</a>
+                </div>
+                @endauth
+            </div>
+        </section>
+        {{-- Tab Detail, Estimasi Harga, Panduan, Informasi Pengiriman --}}
+        <section>
+            <div class="container w-full">
+                <h2></h2>
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 mt-16">
+                    <div class="flex justify-center mb-4">
+                        <a href="#" class="hover:text-blue-500 hover:underline text-lg px-5"
+                            data-tab="detail">Detail</a>
+                        <a href="#" class="hover:text-blue-500 hover:underline text-lg px-5"
+                            data-tab="estimasi-harga">Estimasi Harga</a>
+                        <a href="#" class="hover:text-blue-500 hover:underline text-lg px-5"
+                            data-tab="panduan">Panduan</a>
+                        <a href="#" class="hover:text-blue-500 hover:underline text-lg px-5"
+                            data-tab="informasi-pengiriman">Informasi Pengiriman</a>
+                    </div>
                 </div>
             </div>
         </section>

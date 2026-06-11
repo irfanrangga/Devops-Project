@@ -8,16 +8,14 @@ use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;    // <--- PASTIKAN INI ADA
+use Illuminate\Support\Facades\Auth;    
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session; // <--- TAMBAHKAN INI
+use Illuminate\Support\Facades\Session; 
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
-
-
     public function redirectToGoogle()
     {
         return Socialite::driver('google')->redirect();
@@ -27,6 +25,7 @@ class GoogleController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
+            $avatarUrl = $googleUser->getAvatar();
             $user = User::where('email', $googleUser->getEmail())->first();
             
             if (!$user) {
@@ -34,21 +33,22 @@ class GoogleController extends Controller
                     'name'      => $googleUser->getName(),
                     'email'     => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
-                    // Buat password acak yang panjang karena user login via Google
                     'password'  => Hash::make(Str::random(24)), 
-                    // 'role' => 'user' // Buka komentar ini jika Anda punya kolom role dengan default tertentu
+                    'avatar'    => $avatarUrl,
                 ]);
             } else {
-                // (Opsional) Jika user sudah ada tapi google_id-nya masih kosong, kita update
                 if (!$user->google_id) {
                     $user->update([
-                        'google_id' => $googleUser->getId()
+                        'google_id' => $googleUser->getId(),
+                        'avatar'    => $avatarUrl,
                     ]);
                 }
             }
 
-            // Login ke session Laravel
             Auth::login($user);
+
+            Session::put('user_avatar', $user->avatar);
+            Session::put('user_name', $user->name);
 
             $request->session()->regenerate();
 

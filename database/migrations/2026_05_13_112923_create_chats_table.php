@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('google_id')->nullable()->after('email');
-            $table->string('avatar')->nullable()->after('password');
+        Schema::create('chats', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->text('message');
+            $table->boolean('is_admin')->default(false);
+            $table->timestamps();
         });
     }
 
@@ -22,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('google_id');
-        });
+        Schema::dropIfExists('chats');
     }
 };

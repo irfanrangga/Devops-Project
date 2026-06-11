@@ -75,6 +75,23 @@
                 <p class="text-gray-500">Temukan produk unggulan kami dan sesuaikan dengan kebutuhan Anda.</p>
             </div>
 
+            <div class="flex flex-wrap items-center gap-3 mb-8">
+                @foreach($categories as $category)
+                    @php
+                        $isActive = $activeCategory == $category;
+                        $url = $category == 'Semua' ? request()->url() : request()->fullUrlWithQuery(['kategori' => $category]);
+                    @endphp
+                    
+                    <a href="{{ $url }}" 
+                       class="px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 border 
+                       {{ $isActive 
+                            ? 'bg-brand-blue text-white border-brand-blue shadow-md' 
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-brand-blue hover:text-brand-blue hover:bg-brand-light' }}">
+                        {{ $category }}
+                    </a>
+                @endforeach
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20">
 
                 @forelse($products as $product)
