@@ -19,20 +19,15 @@ class CartController extends Controller
 
         $subtotal = 0;
 
-        // LOGIKA BARU: Loop untuk menyuntikkan harga final ke setiap item
         foreach ($cartItems as $item) {
             if ($item->product) {
-                // 1. Cek apakah ini Custom?
                 $isCustom = (!empty($item->custom_file) && strtolower($item->custom_file) !== 'standard');
                 
-                // 2. Tentukan Harga Satuan
                 $basePrice = $item->product->harga;
                 $finalPrice = $isCustom ? ($basePrice + 5000) : $basePrice;
 
-                // 3. Simpan harga final ini ke object item (agar bisa dibaca di View)
                 $item->final_price = $finalPrice;
 
-                // 4. Tambahkan ke Subtotal Global jika item dipilih
                 if ($item->is_selected ?? true) {
                     $subtotal += $finalPrice * $item->quantity;
                 }
