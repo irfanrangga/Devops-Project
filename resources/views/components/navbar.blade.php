@@ -37,9 +37,10 @@
                 @if(Auth::check())
                     <div class="group relative">
                         <a href="{{ route('profile') }}"
-                            class="flex items-center gap-2 text-gray-700 hover:text-brand-blue transition">
-                            <i class="fa-regular fa-user text-xl group-hover:text-brand-blue"></i>
-                            <span class="font-medium text-[15px]">{{ Auth::user()->name }}</span>
+                            class="flex items-center gap-2 text-gray-700 hover:text-brand-blue hover:bg-blue-50 transition rounded-md p-2">
+                            {{-- <i class="fa-regular fa-user text-xl group-hover:text-brand-blue"></i> --}}
+                            <img src="{{ Auth::user()->avatar ?? asset('assets/icon/profile.png') }}" alt="{{ Auth::user()->name }}" class="w-7 h-7 rounded-full object-cover border border-blue-300">
+                            {{-- <span class="font-medium text-[15px]">{{ Auth::user()->name }}</span> --}}
                             <i class="fa-solid fa-caret-down text-xs ml-1"></i>
                         </a>
 
@@ -50,7 +51,7 @@
                                 class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition">
                                 <i class="fa-solid fa-gear"></i> Profile
                             </a>
-                            @if (Auth::user()->is_admin)
+                            @if (Auth::user()->role === 'admin')
                                 @csrf
                                 <a href="{{ route('dashboard') }}"
                                     class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition">
@@ -71,7 +72,7 @@
                     <a href="{{ route('login') }}"
                         class="flex items-center gap-2 text-gray-700 hover:text-brand-blue transition group">
                         <i class="fa-regular fa-user text-xl group-hover:text-brand-blue"></i>
-                        <span class="font-medium text-[15px]">Masuk/Daftar</span>
+                        <span class="font-medium text-[15px]">Masuk</span>
                     </a>
                 @endif
             </div>
@@ -82,49 +83,91 @@
         </button>
     </div>
 
-    <div id="mobile-menu"
-        class="hidden lg:hidden bg-white border-t border-gray-100 absolute w-full left-0 top-[80px] shadow-lg p-5 flex flex-col gap-4">
-        <div class="flex items-center bg-brand-light rounded-xl px-4 py-3 w-full">
+    <div id="mobile-menu" class="lg:hidden bg-white border-t border-gray-100 absolute w-full left-0 top-[80px] shadow-lg p-5 flex flex-col gap-4 opacity-0 -translate-y-3 pointer-events-none transition-all duration-300 ease-out">
+        <div class="flex items-center bg-brand-light rounded-xl px-4 py-3 w-full mb-4">
             <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
             <input type="text" placeholder="Cari produk"
                 class="w-full bg-transparent border-none outline-none ml-3 text-sm">
         </div>
 
-        <a href="{{ route('home') }}"
-            class="{{ request()->routeIs('home') ? 'text-brand-blue font-bold' : 'text-gray-700 font-medium hover:text-brand-blue' }}">Beranda</a>
-        <a href="{{ route('product.index') }}"
-            class="{{ request()->routeIs('product.*') ? 'text-brand-blue font-bold' : 'text-gray-700 font-medium hover:text-brand-blue' }}">Produk</a>
-        <a href="{{ route('layanan') }}"
-            class="{{ request()->routeIs('layanan') ? 'text-brand-blue font-bold' : 'text-gray-700 font-medium hover:text-brand-blue' }}">Layanan</a>
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+
+            <a href="{{ route('home') }}"
+                class="block px-4 py-4 border-b border-gray-200
+                {{ request()->routeIs('home') ? 'bg-blue-50 text-brand-blue font-semibold' : 'text-gray-700' }}">
+                Beranda
+            </a>
+
+            <a href="{{ route('product.index') }}"
+                class="block px-4 py-4 border-b border-gray-200
+                {{ request()->routeIs('product.*') ? 'bg-blue-50 text-brand-blue font-semibold' : 'text-gray-700' }}">
+                Produk
+            </a>
+
+            <a href="{{ route('layanan') }}"
+                class="block px-4 py-4
+                {{ request()->routeIs('layanan') ? 'bg-blue-50 text-brand-blue font-semibold' : 'text-gray-700' }}">
+                Layanan
+            </a>
+
+        </div>
 
         <hr class="border-gray-100">
 
         @if (Auth::check())
-            <div class="py-2 flex flex-col">
-                <span class="text-gray-600 text-sm">Selamat datang,</span>
-                <span class="font-semibold text-lg text-gray-900 mb-2">{{ Auth::user()->name }}</span>
+           <div class="mt-2 border-t border-gray-200 pt-4">
 
-                <a href="{{ route('profile') }}"
-                    class="text-sm font-medium text-brand-blue hover:text-brand-dark flex items-center gap-2">
-                    <i class="fa-solid fa-gear"></i> Pengaturan Akun
-                </a>
+            <div class="mb-6">
+                <span class="text-gray-500 text-sm">
+                    Selamat datang,
+                </span>
 
-                @if (Auth::user()->role === 'admin')
-                    @csrf
-                    <a href="{{ route('dashboard') }}"
-                        class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition">
-                        <i class="fa-solid fa-gauge"></i>Dashboard
-                    </a>
-                @endif
-
-                <form action="{{ route('logout') }}" method="POST" class="mt-3">
-                    @csrf
-                    <button type="submit"
-                        class="text-sm font-medium text-red-600 hover:text-red-700 flex items-center gap-2">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
-                    </button>
-                </form>
+                <p class="font-semibold text-lg text-gray-900">
+                    {{ Auth::user()->name }}
+                </p>
             </div>
+
+            <div class="border-t border-gray-200 mt-5 pt-4">
+
+                <div class="grid grid-cols-2 gap-3">
+
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+
+                        <button type="submit"
+                            class="w-full border border-red-200 rounded-xl py-3
+                                text-red-600 font-medium
+                                flex items-center justify-center gap-2
+                                hover:bg-red-50 transition">
+
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            Keluar
+                        </button>
+                    </form>
+
+                    <a href="{{ route('profile') }}"
+                        class="border border-blue-200 rounded-xl py-3
+                            text-brand-blue font-medium
+                            flex items-center justify-center gap-2
+                            hover:bg-blue-50 transition">
+
+                        <i class="fa-solid fa-gear"></i>
+                        Pengaturan
+                    </a>
+
+                </div>
+
+            </div>
+
+            @if (Auth::user()->role === 'admin')
+                <a href="{{ route('dashboard') }}"
+                    class="mt-4 flex items-center gap-2 text-gray-700">
+                    <i class="fa-solid fa-gauge"></i>
+                    Dashboard
+                </a>
+            @endif
+
+        </div>
         @else
             <div class="flex justify-between items-center py-2">
                 <span class="text-gray-600 font-medium">Status</span>
@@ -142,7 +185,27 @@
         const menu = document.getElementById('mobile-menu');
 
         btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
+
+            const isOpen = !menu.classList.contains('pointer-events-none');
+
+            if (isOpen) {
+
+                menu.classList.add(
+                    'opacity-0',
+                    '-translate-y-3',
+                    'pointer-events-none'
+                );
+
+            } else {
+
+                menu.classList.remove(
+                    'opacity-0',
+                    '-translate-y-3',
+                    'pointer-events-none'
+                );
+
+            }
+
         });
 
         // Config Tailwind tetap sama
@@ -166,62 +229,3 @@
     </script>
 @endpush
 
-@push('scripts')
-    <script>
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-        });
-
-        // Config Tailwind tetap sama
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            blue: '#005BEC',
-                            dark: '#0A43C3',
-                            light: '#EEF2FF',
-                            gray: '#f8f9fa'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-@endpush
-
-@push('scripts')
-    <script>
-        // --- 1. Logic Hamburger Menu (Yang Lama) ---
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-        });
-
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            blue: '#005BEC',
-                            dark: '#0A43C3',
-                            light: '#EEF2FF',
-                            gray: '#f8f9fa' // warna background section
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-@endpush

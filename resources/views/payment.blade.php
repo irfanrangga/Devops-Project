@@ -240,8 +240,10 @@
 
     <x-footer></x-footer>
 
+
     <script>
         function startCountdown(deadline) {
+
             const timerElement = document.getElementById('countdown-timer');
             // Jika elemen tidak ada (misal status sudah paid), hentikan fungsi
             if (!timerElement) return;
@@ -289,7 +291,10 @@
 
             startCountdown(deadline);
         });
+
     </script>
+
+    @stack('scripts')
 </body>
 
 </html>

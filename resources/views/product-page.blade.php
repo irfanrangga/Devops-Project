@@ -42,6 +42,16 @@
         html {
             scroll-behavior: smooth;
         }
+
+        /* Hilangkan scrollbar */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 
@@ -75,21 +85,63 @@
                 <p class="text-gray-500">Temukan produk unggulan kami dan sesuaikan dengan kebutuhan Anda.</p>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3 mb-8">
-                @foreach($categories as $category)
-                    @php
-                        $isActive = $activeCategory == $category;
-                        $url = $category == 'Semua' ? request()->url() : request()->fullUrlWithQuery(['kategori' => $category]);
-                    @endphp
-                    
-                    <a href="{{ $url }}" 
-                       class="px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 border 
-                       {{ $isActive 
-                            ? 'bg-brand-blue text-white border-brand-blue shadow-md' 
-                            : 'bg-white text-gray-600 border-gray-200 hover:border-brand-blue hover:text-brand-blue hover:bg-brand-light' }}">
-                        {{ $category }}
-                    </a>
-                @endforeach
+            <div class="relative mb-8">
+
+                <!-- Fade kiri -->
+                <div
+                    class="absolute left-0 top-0 bottom-0 w-8 z-10 pointer-events-none
+                        bg-gradient-to-r from-white to-transparent">
+                </div>
+
+                <!-- Fade kanan -->
+                <div
+                    class="absolute right-0 top-0 bottom-0 w-8 z-10 pointer-events-none
+                        bg-gradient-to-l from-white to-transparent">
+                </div>
+
+                <!-- Category Slider -->
+                <div
+                    id="category-slider"
+                    class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-1 snap-x snap-mandatory">
+
+                    @foreach($categories as $category)
+
+                        @php
+                            $isActive = $activeCategory == $category;
+
+                            $url = $category == 'Semua'
+                                ? request()->url()
+                                : request()->fullUrlWithQuery([
+                                    'kategori' => $category
+                                ]);
+                        @endphp
+
+                        <a href="{{ $url }}"
+                            class="
+                                category-chip
+                                snap-start
+                                shrink-0
+                                px-4 py-2
+                                rounded-full
+                                text-sm
+                                font-medium
+                                whitespace-nowrap
+                                transition-all duration-300
+                                border
+                                {{ $isActive
+                                    ? 'active-category bg-brand-blue text-white border-brand-blue shadow-md'
+                                    : 'bg-white text-gray-600 border-gray-200 hover:border-brand-blue hover:text-brand-blue hover:bg-brand-light'
+                                }}
+                            ">
+
+                            {{ $category }}
+
+                        </a>
+
+                    @endforeach
+
+                </div>
+
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20">
@@ -188,17 +240,6 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.getElementById('mobile-menu-btn');
-            const menu = document.getElementById('mobile-menu');
-
-            if (btn && menu) {
-                btn.addEventListener('click', () => {
-                    menu.classList.toggle('hidden');
-                });
-            }
-        });
-
         function toggleWishlist(button, productId, event) {
             // mencegah klik tembus ke link detail produk
             event.preventDefault();
@@ -227,7 +268,6 @@
                 icon.classList.add('fa-regular', 'text-gray-400');
             }
 
-            // KIRIM REQUEST KE DATABASE
             fetch("{{ route('wishlist.toggle') }}", {
                 method: "POST",
                 headers: {
@@ -238,7 +278,6 @@
             })
                 .then(response => {
                     if (response.status === 401) {
-                        // jika user belum login, batalkan perubahan visual dan redirect
                         if (!isCurrentlyLiked) {
                             icon.classList.add('fa-regular', 'text-gray-400');
                             icon.classList.remove('fa-solid', 'text-pink-500');
@@ -313,6 +352,27 @@
                 toast.classList.add('hidden');
             }, 300);
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const activeCategory =
+                document.querySelector('.active-category');
+
+            if (activeCategory) {
+
+                setTimeout(() => {
+
+                    activeCategory.scrollIntoView({
+                        behavior: 'smooth',
+                        inline: 'center',
+                        block: 'nearest'
+                    });
+
+                }, 150);
+
+            }
+
+        });
     </script>
 </body>
 

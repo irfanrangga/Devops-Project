@@ -290,6 +290,7 @@
 
     <x-footer></x-footer>
 
+
     <script>
         function toggleFaq(button) {
             const content = button.nextElementSibling;
@@ -303,7 +304,12 @@
             }
         }
     </script>
+
+    @stack('scripts')
+
     <style>
+
+
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }

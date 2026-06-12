@@ -173,26 +173,6 @@
 
     <x-footer></x-footer>
     @stack('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-
-            menuBtn.addEventListener('click', function () {
-                mobileMenu.classList.toggle('hidden');
-
-                // Ganti ikon hamburger menjadi X atau sebaliknya
-                const icon = menuBtn.querySelector('i');
-                if (mobileMenu.classList.contains('hidden')) {
-                    icon.classList.remove('fa-xmark');
-                    icon.classList.add('fa-bars');
-                } else {
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-xmark');
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>

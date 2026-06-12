@@ -426,26 +426,7 @@
 
     <x-footer></x-footer>
 
-    {{-- SCRIPT MOBILE NAVBAR --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-
-            menuBtn.addEventListener('click', function() {
-                mobileMenu.classList.toggle('hidden');
-
-                const icon = menuBtn.querySelector('i');
-                if (mobileMenu.classList.contains('hidden')) {
-                    icon.classList.remove('fa-xmark');
-                    icon.classList.add('fa-bars');
-                } else {
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-xmark');
-                }
-            });
-        });
-    </script>
+    @stack('scripts')
 </body>
 
 </html>
