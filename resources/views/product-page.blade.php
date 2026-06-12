@@ -89,14 +89,12 @@
 
                 <!-- Fade kiri -->
                 <div
-                    class="absolute left-0 top-0 bottom-0 w-8 z-10 pointer-events-none
-                        bg-gradient-to-r from-white to-transparent">
+                    class="absolute left-0 top-0 bottom-0 w-8 z-10 pointer-events-none">
                 </div>
 
                 <!-- Fade kanan -->
                 <div
-                    class="absolute right-0 top-0 bottom-0 w-8 z-10 pointer-events-none
-                        bg-gradient-to-l from-white to-transparent">
+                    class="absolute right-0 top-0 bottom-0 w-8 z-10 pointer-events-none">
                 </div>
 
                 <!-- Category Slider -->
@@ -144,7 +142,7 @@
 
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20">
 
                 @forelse($products as $product)
                     <div class="group relative bg-white border rounded-xl overflow-hidden">
