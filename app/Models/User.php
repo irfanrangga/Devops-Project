@@ -21,6 +21,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Message::class, 'user_id');
     }
 
+    public function chats()
+    {
+        return $this->hasMany(Chat::class, 'user_id');
+    }
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 

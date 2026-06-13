@@ -83,7 +83,6 @@ class PasswordResetTest extends TestCase
         $response->assertRedirect(route('login'));
         $response->assertSessionHas('success');
 
-        // Pastikan password baru bisa dicocokkan
         $user->refresh();
         $this->assertTrue(Hash::check('newpassword', $user->password));
     }
