@@ -54,9 +54,14 @@
                         <p class="text-red-500 text-xs mt-1 mb-4">{{ $message }}</p>
                     @enderror
 
-                    <label class="text-sm font-semibold @error('password') text-red-500 @enderror mt-4 block">
-                        Password
-                    </label>
+                    <div class="flex justify-between items-center mt-4">
+                        <label class="text-sm font-semibold @error('password') text-red-500 @enderror">
+                            Password
+                        </label>
+                        <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:underline">
+                            Lupa Password?
+                        </a>
+                    </div>
                     
                     <!-- Wrapper Input Password dengan Fitur Show/Hide -->
                     <div class="relative">

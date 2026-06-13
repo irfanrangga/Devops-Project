@@ -17,7 +17,7 @@ class RegisterControllerTest extends TestCase
     {
         $response = $this->post(route('register.store'), [
             'name' => 'John Doe',
-            'email' => 'john@example.com',
+            'email' => 'john@gmail.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
@@ -26,7 +26,7 @@ class RegisterControllerTest extends TestCase
                  ->assertSessionHas('success', 'Akun berhasil dibuat! Silakan login.');
 
         $this->assertDatabaseHas('users', [
-            'email' => 'john@example.com',
+            'email' => 'john@gmail.com',
             'name' => 'John Doe',
         ]);
     }
