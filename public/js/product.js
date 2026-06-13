@@ -354,6 +354,60 @@ document.addEventListener("DOMContentLoaded", function () {
             closeMenu();
         }
     });
+
+    // Tab functionality
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabContents = document.querySelectorAll(".tab-content");
+
+    function activateTab(tabName) {
+        // Hide all tab contents
+        tabContents.forEach((content) => {
+            content.classList.add("hidden");
+            content.classList.remove("block");
+        });
+
+        // Remove active class from all buttons
+        tabButtons.forEach((btn) => {
+            btn.classList.remove("active");
+            btn.classList.remove("border-blue-500");
+            btn.classList.add("border-transparent");
+            btn.classList.remove("text-blue-500");
+        });
+
+        // Show active tab content
+        const activeContent = document.getElementById(tabName);
+        if (activeContent) {
+            activeContent.classList.remove("hidden");
+            activeContent.classList.add("block");
+        }
+
+        // Add active class to clicked button
+        const activeButton = document.querySelector(
+            `.tab-button[data-tab="${tabName}"]`
+        );
+        if (activeButton) {
+            activeButton.classList.add("active");
+            activeButton.classList.remove("border-transparent");
+            activeButton.classList.add("border-blue-500");
+            activeButton.classList.add("text-blue-500");
+        }
+    }
+
+    // Attach click handlers to all tab divs
+    tabButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const tabName = button.getAttribute("data-tab");
+            if (tabName) {
+                activateTab(tabName);
+            }
+            return false;
+        });
+    });
+    
+    // Activate "detail" tab by default
+    activateTab("detail");
 });
 
 

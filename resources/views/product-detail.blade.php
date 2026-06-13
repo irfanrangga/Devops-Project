@@ -35,22 +35,16 @@
                             class="w-full h-96 md:h-[32rem] rounded-xl object-cover border border-gray-200"
                             src="{{ asset($product->file) }}" alt="{{ $product->nama }}">
                     </div>
+                    
                     <div class="thumbnails-container flex gap-4 mt-4 w-full overflow-x-auto">
-                        <img src="{{ asset($product->file) }}" alt=""
+                        <img src="{{ asset($product->file) }}" alt="{{ $product->nama }}"
                             class="img-thumbnail w-32 h-32 object-cover border-2 border-blue-500 cursor-pointer rounded-md hover:opacity-100 transition"
                             onclick="changeMainImage(this)">
-                        <img src="{{ asset(" assets/etalase_produk/majalah.jpeg") }}" alt=""
-                            class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition"
+                        @foreach($product->productImages as $image)
+                        <img src="{{ Storage::url($image->image_url) }}" alt=" {{ $image->image_url }}"
+                            class="img-thumbnail w-32 h-32 shrink-0 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition"
                             onclick="changeMainImage(this)">
-                        <img src="{{ asset($product->file) }}" alt=""
-                            class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition"
-                            onclick="changeMainImage(this)">
-                        <img src="{{ asset($product->file) }}" alt=""
-                            class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition"
-                            onclick="changeMainImage(this)">
-                        <img src="{{ asset($product->file) }}" alt=""
-                            class="img-thumbnail w-32 h-32 object-cover border cursor-pointer rounded-md opacity-75 hover:opacity-100 transition"
-                            onclick="changeMainImage(this)">
+                        @endforeach
                     </div>
                     <div class="my-8 flex flex-col justify-center gap-1">
                         <h2 class="text-gray-300 text-md">*Harga belum termasuk ongkos kirim</h2>
@@ -257,52 +251,19 @@
         </section>
         {{-- Ulasan Pengguna --}}
         <section>
-            <div class="container w-full mt-32">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Ulasan Pengguna</h2>
+            <div class="container w-full mt-16 sm:mt-32">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">Ulasan Pengguna</h2>
                 @if(session('success'))
                 <div>
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 mb-3 rounded relative"
                         role="alert">
                         <span class="block sm:inline">{{ session('success') }}</span>
                     </div>
                 </div>
                 @endif
 
-                <div class="space-y-4 mb-8">
-                    @forelse($product->reviews as $review)
-                    <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center gap-3">
-                                {{-- Avatar Pengguna (Menggunakan logika avatar sebelumnya) --}}
-                                <img src="{{ $review->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) . '&background=random' }}"
-                                    alt="{{ $review->user->name }}" class="w-10 h-10 rounded-full object-cover">
-                                <div>
-                                    <h4 class="font-semibold text-gray-800">{{ $review->user->name }}</h4>
-                                    <p class="text-xs text-gray-500">{{ $review->created_at->diffForHumans() }}</p>
-                                </div>
-                            </div>
-                            {{-- Bintang Rating --}}
-                            <div class="flex text-yellow-400 text-sm">
-                                @for($i = 1; $i <= 5; $i++) 
-                                    @if($i <=$review->rating)
-                                        <i class="fa-solid fa-star"></i>
-                                    @else
-                                        <i class="fa-regular fa-star text-gray-300"></i>
-                                    @endif
-                                @endfor
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mt-3">{{ $review->comment }}</p>
-                    </div>
-                    @empty
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-                        <p class="text-gray-500">Belum ada ulasan untuk produk ini. Jadilah yang pertama memberikan
-                            ulasan!</p>
-                    </div>
-                    @endforelse
-                </div>
                 @auth
-                <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm mb-5">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Tulis Ulasan Anda</h3>
 
                     {{-- Arahkan ke route store yang ada di ReviewController --}}
@@ -384,22 +345,166 @@
                         Sekarang</a>
                 </div>
                 @endauth
+
+                <div class="space-y-4 mb-8">
+                    @forelse($product->reviews as $review)
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                {{-- Avatar Pengguna (Menggunakan logika avatar sebelumnya) --}}
+                                <img src="{{ $review->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) . '&background=random' }}"
+                                    alt="{{ $review->user->name }}" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">{{ $review->user->name }}</h4>
+                                    <p class="text-xs text-gray-500">{{ $review->created_at->diffForHumans() }}</p>
+                                </div>
+                            </div>
+                            {{-- Bintang Rating --}}
+                            <div class="flex text-yellow-400 text-sm">
+                                @for($i = 1; $i <= 5; $i++) 
+                                    @if($i <=$review->rating)
+                                        <i class="fa-solid fa-star"></i>
+                                    @else
+                                        <i class="fa-regular fa-star text-gray-300"></i>
+                                    @endif
+                                @endfor
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mt-3 text-sm sm:text-base">{{ $review->comment }}</p>
+                    </div>
+                    @empty
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                        <p class="text-gray-500">Belum ada ulasan untuk produk ini. Jadilah yang pertama memberikan
+                            ulasan!</p>
+                    </div>
+                    @endforelse
+                </div>
             </div>
         </section>
+
         {{-- Tab Detail, Estimasi Harga, Panduan, Informasi Pengiriman --}}
         <section>
             <div class="container w-full">
-                <h2></h2>
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 mt-16">
-                    <div class="flex justify-center mb-4">
-                        <a href="#" class="hover:text-blue-500 hover:underline text-lg px-5"
-                            data-tab="detail">Detail</a>
-                        <a href="#" class="hover:text-blue-500 hover:underline text-lg px-5"
-                            data-tab="estimasi-harga">Estimasi Harga</a>
-                        <a href="#" class="hover:text-blue-500 hover:underline text-lg px-5"
-                            data-tab="panduan">Panduan</a>
-                        <a href="#" class="hover:text-blue-500 hover:underline text-lg px-5"
-                            data-tab="informasi-pengiriman">Informasi Pengiriman</a>
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mt-12">Detail Produk</h2>
+                <div class="border border-gray-200 rounded-lg mt-4">
+                    <div class="flex bg-gray-50 justify-center border-b border-gray-200">
+                        <div class="tab-button hover:text-blue-500 hover:cursor-pointer border-b-2 border-blue-500 py-4 transition-colors duration-300 active" role="button" data-tab="detail">
+                            <a class="text-sm text-center sm:text-lg px-3 sm:px-5 opacity-100 block cursor-pointer" data-tab="detail">Detail</a>
+                        </div>
+                        <div class="tab-button hover:text-blue-500 hover:cursor-pointer border-b-2 border-transparent py-4 transition-colors duration-300" role="button" data-tab="estimasi-harga">
+                            <a class="text-sm text-center sm:text-lg px-3 sm:px-5 block cursor-pointer" data-tab="estimasi-harga">Harga</a>
+                        </div>
+                        <div class="tab-button hover:text-blue-500 hover:cursor-pointer border-b-2 border-transparent py-4 transition-colors duration-300" role="button" data-tab="panduan">
+                            <a class="text-sm text-center sm:text-lg px-3 sm:px-5 block cursor-pointer" data-tab="panduan">Panduan</a>
+                        </div>
+                        <div class="tab-button hover:text-blue-500 hover:cursor-pointer border-b-2 border-transparent py-4 transition-colors duration-300" role="button" data-tab="informasi-pengiriman">
+                            <a class="text-sm text-center sm:text-lg px-3 sm:px-5 block cursor-pointer" data-tab="informasi-pengiriman">Pengiriman</a>
+                        </div>
+                    </div>
+
+                    {{-- Tab Content --}}
+                    <div class="p-6">
+                        {{-- Detail Tab --}}
+                        <div id="detail" class="tab-content block">
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="text-md sm:text-lg font-semibold text-gray-800 mb-2">Deskripsi Produk</h3>
+                                    <p class="text-sm sm:text-base text-gray-600">{{ $product->deskripsi ?? 'Deskripsi produk tidak tersedia' }}</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-md sm:text-lg font-semibold text-gray-800 mb-2">Kategori</h3>
+                                    <p class="text-sm sm:text-base text-gray-600">{{ $product->kategori ?? '-' }}</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-md sm:text-lg font-semibold text-gray-800 mb-2">Bahan</h3>
+                                    <p class="text-sm sm:text-base text-gray-600">{{ $product->bahan ?? '-' }}</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-md sm:text-lg font-semibold text-gray-800 mb-2">Warna Tersedia</h3>
+                                    <p class="text-sm sm:text-base text-gray-600">{{ $product->warna ?? '-' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Estimasi Harga Tab --}}
+                        <div id="estimasi-harga" class="tab-content hidden">
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="text-md sm:text-lg font-semibold text-gray-800 mb-2">Harga Dasar Produk</h3>
+                                    <p class="text-lg sm:text-2xl font-bold text-blue-600">Rp {{ number_format($product->harga, 0, ',', '.') }}</p>
+                                </div>
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                    <h3 class="text-md sm:text-lg font-semibold text-gray-800 mb-2">Catatan Harga</h3>
+                                    <ul class="text-sm sm:text-base text-gray-600 space-y-2">
+                                        <li>• Harga belum termasuk ongkos kirim</li>
+                                        <li>• Pembelian produk dikenakan PPN 12%</li>
+                                        <li>• Harga dapat berubah tergantung bahan dan warna yang dipilih</li>
+                                        <li>• Desain custom mungkin dikenakan biaya tambahan</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <table class="w-full border border-gray-200 rounded-lg text-left table-auto">
+                                        <thead class="bg-gray-50">
+                                            <tr class="">
+                                                <th class="py-3 px-4 text-left text-gray-800 font-semibold">Bahan</th>
+                                                <th class="py-3 px-4 text-left text-gray-800 font-semibold">Kuantitas</th>
+                                                <th class="py-3 px-4 text-left text-gray-800 font-semibold">Harga Satuan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="border-t border-gray-200">
+                                                <td class="py-3 px-4">Standard</td>
+                                                <td class="py-3 px-4">Rp 0</td>
+                                            </tr>
+                                            <tr class="border-t border-gray-200">
+                                                <td class="py-3 px-4">Custom</td>
+                                                <td class="py-3 px-4">Rp 20.000 - Rp 100.000 (tergantung kompleksitas desain)</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Panduan Tab --}}
+                        <div id="panduan" class="tab-content hidden">
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="text-md sm:text-lg font-semibold text-gray-800 mb-3">Panduan Pembelian</h3>
+                                    <ol class="text-sm sm:text-base text-gray-600 space-y-2 list-decimal list-inside">
+                                        <li>Pilih bahan dan warna yang diinginkan</li>
+                                        <li>Tentukan jenis desain (standard atau custom)</li>
+                                        <li>Jika custom, upload file desain Anda (PNG, JPG, PDF max 5MB)</li>
+                                        <li>Masukkan kuantitas produk yang diinginkan</li>
+                                        <li>Tambahkan catatan khusus jika diperlukan</li>
+                                        <li>Klik "Beli Langsung" atau "Keranjang"</li>
+                                        <li>Lanjutkan ke checkout dan pembayaran</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Informasi Pengiriman Tab --}}
+                        <div id="informasi-pengiriman" class="tab-content hidden">
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="text-md sm:text-lg font-semibold text-gray-800 mb-2">Estimasi Waktu Pengiriman</h3>
+                                    <ul class="text-sm sm:text-base text-gray-600 space-y-2 list-disc list-inside">
+                                        <li>Produk standard: 3-5 hari kerja</li>
+                                        <li>Produk custom: 5-7 hari kerja</li>
+                                        <li>Pengiriman dilakukan setelah pembayaran dikonfirmasi</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 class="text-md sm:text-lg font-semibold text-gray-800 mb-2">Ongkos Kirim</h3>
+                                    <p class="text-sm sm:text-base text-gray-600">Ongkos kirim dihitung berdasarkan lokasi pengiriman dan akan ditampilkan saat checkout</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-md sm:text-lg font-semibold text-gray-800 mb-2">Kebijakan Pengembalian</h3>
+                                    <p class="text-sm sm:text-base text-gray-600">Produk dapat dikembalikan dalam kondisi baik dan kemasan asli dalam waktu 7 hari setelah penerimaan</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

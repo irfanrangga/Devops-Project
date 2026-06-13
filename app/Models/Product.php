@@ -30,4 +30,9 @@ class Product extends Model
     {
         return $this->hasMany(Review::class)->latest();
     }
+
+    public function productImages()
+    {
+        return $this->hasMany(ProductImages::class, 'product_id');
+    }
 }
