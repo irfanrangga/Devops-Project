@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+   
+    image: ${DOCKER_USERNAME:-bossawit}/myapp-backend:v1.0.0
+    container_name: laravel_app
+    ports:
+      - "8080:80"
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=myapp_db
+      - DB_USERNAME=appuser
+      - DB_PASSWORD=password123
+    depends_on:
+      - postgres
+    networks:
+      - devops-network
+
+  postgres:
+   
+    image: postgres:15-alpine
+    container_name: postgres_db
+    environment:
+      - POSTGRES_USER=appuser
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_DB=myapp_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - devops-network
+
+networks:
+  devops-network:
+    driver: bridge
+
+volumes:
+  pgdata:
