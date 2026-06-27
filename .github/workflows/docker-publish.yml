@@ -28,6 +28,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/laravel-app:latest
-          chace-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/laravel-app:buildcache
+          tags: ${{ secrets.DOCKER_USERNAME }}/devops:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/laravel-app:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/laravel-app:buildcache,mode=max
